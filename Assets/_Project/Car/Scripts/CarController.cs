@@ -6,6 +6,7 @@ public class CarController : MonoBehaviour
 {
     private const string HORIZONTAL = "Horizontal";
     private const string VERTICAL = "Vertical";
+    private const string BREAK = "Fire1";
 
     private float horizontalInput;
     private float verticalInput;
@@ -48,7 +49,12 @@ public class CarController : MonoBehaviour
     {
         GetInput();
 
-        speed = rb.velocity.magnitude * 3.6f;
+        var velocity = rb.velocity.magnitude;
+
+        if (velocity >= 0.1f)
+            speed = velocity * 3.6f;
+        else
+            speed = 0;
     }
 
     private void FixedUpdate()
@@ -62,7 +68,7 @@ public class CarController : MonoBehaviour
     {
         horizontalInput = Input.GetAxis(HORIZONTAL);
         verticalInput = Input.GetAxis(VERTICAL);
-        isBreaking = Input.GetKey(KeyCode.Space);
+        isBreaking = Input.GetButton(BREAK);
     }
 
     private void HandleMotor()
