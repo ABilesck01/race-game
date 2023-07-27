@@ -17,27 +17,59 @@ public class CarController : MonoBehaviour
         public WheelCollider collider;
         public Axel axel;
     }
-    [Header("Acceleration")]
-    [SerializeField] private float maxAcceleration = 30f;
-    [SerializeField] private float brakeAcceleration = 30f;
-    [Header("Steer")]
-    [SerializeField, Range(0.1f, 2)] private float turnSensitivity = 1f;
-    [SerializeField] private float maxSteerAngle = 30f;
+
+    [SerializeField] public CarAsset carAsset;
+    [SerializeField] public CarStatsData carStatsData;
     [Space]
     [SerializeField] private Transform centerOfMass;
     [Space]
     [SerializeField] private List<Wheel> wheels;
 
+    private float topSpeed = 33;
+    private float maxAcceleration = 30f;
+    private float brakeAcceleration = 30f;
+    private float turnSensitivity = 1f;
+    private float maxSteerAngle = 30f;
+    
+
     private float verticalInput = 0;
     private float horizontalInput = 0;
     private bool isBreaking = false;
+    private bool isTopSpeed = false;
     private bool isReverseBreaking = false;
+    private CarData carData;
     private Rigidbody rb;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
         rb.centerOfMass = centerOfMass.localPosition;
+
+        GetStats();
+    }
+
+    private void GetStats()
+    {
+        carData = new CarData(carAsset, carStatsData, 1);
+
+        maxAcceleration = carData.acceleration;
+        brakeAcceleration = carData.brakes;
+        topSpeed = carData.topSpeed;
+        maxSteerAngle = carData.maxSteerAngle;
+        turnSensitivity = carData.steerSensitivity;
+
+        rb.mass = carData.mass;
+
+        var joint = new JointSpring();
+        joint.spring = carData.SuspensionSpring;
+        joint.damper = carData.SuspensionDamper;
+
+        foreach (var wheel in wheels)
+        {
+            
+            wheel.collider.suspensionSpring = joint;
+
+        }
     }
 
     private void getInputs()
@@ -50,10 +82,19 @@ public class CarController : MonoBehaviour
 
     private void Move()
     {
+        Debug.Log("Move");
+
         foreach (Wheel wheel in wheels)
         {
-            wheel.collider.motorTorque = verticalInput * maxAcceleration * 600 * Time.fixedDeltaTime;
+            float torque = isTopSpeed ? 0 : verticalInput * maxAcceleration * 600 * Time.fixedDeltaTime;
+            wheel.collider.motorTorque = torque;
         }
+    }
+
+    private bool IsOnTopSpeed()
+    {
+        float currentSpeed = rb.velocity.magnitude;
+        return currentSpeed >= topSpeed;
     }
 
     private void Steer()
@@ -99,6 +140,8 @@ public class CarController : MonoBehaviour
     {
         getInputs();
         RotateWheels();
+
+        isTopSpeed = IsOnTopSpeed();
     }
 
     private void FixedUpdate()

@@ -15,7 +15,7 @@ public class Speedometer : MonoBehaviour
     [SerializeField] private Rigidbody rb;
     [SerializeField] private TextMeshProUGUI txtSpeed;
 
-    private void Update()
+    private void FixedUpdate()
     {
         float speed = rb.velocity.magnitude;
         if(measure == SpeedMeasure.kmh)
