@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class CarCamera : MonoBehaviour
 {
-    [SerializeField] private Vector3 offset;
+    [SerializeField] private float moveSmoothness;
+    [SerializeField] private float rotationSmoothness;
+
+    [SerializeField] private Vector3 moveOffset;
+    [SerializeField] private Vector3 rotationOffset;
+
     [SerializeField] private Transform target;
-    [SerializeField] private float translateSpeed;
-    [SerializeField] private float rotationSpeed;
 
     private Transform myTransform;
 
@@ -18,19 +21,22 @@ public class CarCamera : MonoBehaviour
 
     private void FixedUpdate()
     {
-        HandleTranslation();
+        handleMovement();
         HandleRotation();
     }
 
-    private void HandleTranslation()
+    private void handleMovement()
     {
-        var targetPosition = target.TransformPoint(offset);
-        myTransform.position = Vector3.Lerp(myTransform.position, targetPosition, translateSpeed * Time.deltaTime);
+        Vector3 targetPos = target.TransformPoint(moveOffset);
+
+        myTransform.position = Vector3.Lerp(myTransform.position, targetPos, moveSmoothness);
     }
+
     private void HandleRotation()
     {
         var direction = target.position - myTransform.position;
-        var rotation = Quaternion.LookRotation(direction, Vector3.up);
-        myTransform.rotation = Quaternion.Lerp(myTransform.rotation, rotation, rotationSpeed * Time.deltaTime);
+        Quaternion rot = Quaternion.LookRotation(direction + rotationOffset, Vector3.up);
+
+        myTransform.rotation = Quaternion.Lerp(myTransform.rotation, rot, rotationSmoothness);
     }
 }
