@@ -4,21 +4,17 @@ using UnityEngine;
 
 public class CarSounds : MonoBehaviour
 {
-    [SerializeField] private float minSpeed;
-    [SerializeField] private float maxSpeed;
-    [Space]
     [SerializeField] private float minPitch;
     [SerializeField] private float maxPitch;
 
-    private Rigidbody rb;
+    private CarController controller;
     private AudioSource audioSource;
 
-    private float currentSpeed;
     private float pitchFromCar;
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody>();
+        controller = GetComponent<CarController>();
         audioSource = GetComponent<AudioSource>();
     }
 
@@ -29,25 +25,37 @@ public class CarSounds : MonoBehaviour
 
     private void EngineSound()
     {
-        currentSpeed = rb.velocity.magnitude;
-        pitchFromCar = rb.velocity.magnitude / 60f;
+        pitchFromCar = controller.CalculateRpm() * controller.GetNormalizedSpeed() + minPitch;
 
-        if (currentSpeed < minSpeed)
+        if( pitchFromCar < minPitch ) 
         {
             audioSource.pitch = minPitch;
-            return;
         }
-        if (currentSpeed > maxSpeed)
+        else if( pitchFromCar > maxPitch )
         {
             audioSource.pitch = maxPitch;
-            return;
+        }
+        else
+        {
+            audioSource.pitch = pitchFromCar;
         }
 
-        if (currentSpeed > minSpeed && currentSpeed < maxSpeed)
-        {
-            audioSource.pitch = minPitch + pitchFromCar;
-            return;
-        }
+        //if (currentSpeed < minSpeed)
+        //{
+        //    audioSource.pitch = minPitch;
+        //    return;
+        //}
+        //if (currentSpeed > maxSpeed)
+        //{
+        //    audioSource.pitch = maxPitch;
+        //    return;
+        //}
+
+        //if (currentSpeed > minSpeed && currentSpeed < maxSpeed)
+        //{
+        //    audioSource.pitch = minPitch + pitchFromCar;
+        //    return;
+        //}
 
         
     }
