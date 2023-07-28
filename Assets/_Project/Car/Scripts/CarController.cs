@@ -16,6 +16,7 @@ public class CarController : MonoBehaviour
     {
         public GameObject model;
         public WheelCollider collider;
+        public TrailRenderer skidRenderer;
         public Axel axel;
     }
 
@@ -128,7 +129,7 @@ public class CarController : MonoBehaviour
         shiftUp = Input.GetButtonDown("Fire2");
         shiftDown = Input.GetButtonDown("Fire3");
 
-        isBreaking = rb.velocity.z > 0 && verticalInput < 0;
+        isReverseBreaking = rb.velocity.z > 0 && verticalInput < 0;
     }
 
     private void Move()
@@ -249,6 +250,15 @@ public class CarController : MonoBehaviour
         }
     }
 
+    private void WheelEffects()
+    {
+        foreach (Wheel wheel in wheels)
+        {
+
+            wheel.skidRenderer.emitting = isBreaking && wheel.axel == Axel.Rear;
+        }
+    }
+
     private void Update()
     {
         getInputs();
@@ -257,6 +267,8 @@ public class CarController : MonoBehaviour
 
         currentAccel = CalculateGearAccel();
         isTopSpeed = IsOnTopSpeed();
+
+        WheelEffects();
     }
 
     private void FixedUpdate()

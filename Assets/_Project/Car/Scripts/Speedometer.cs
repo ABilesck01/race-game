@@ -12,13 +12,13 @@ public class Speedometer : MonoBehaviour
     }
 
     [SerializeField] private SpeedMeasure measure;
-    [SerializeField] private Rigidbody rb;
+    [SerializeField] private CarController carController;
     [SerializeField] private TextMeshProUGUI txtSpeed;
 
     private void FixedUpdate()
     {
-        float speed = rb.velocity.magnitude;
-        if(measure == SpeedMeasure.kmh)
+        float speed = carController.GetCurrentSpeed();
+        if (measure == SpeedMeasure.kmh)
         {
             speed *= 3.6f;
         }
