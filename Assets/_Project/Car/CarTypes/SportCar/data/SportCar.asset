@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbfa363dc0998b64d9203eaa09428fbc, type: 3}
   m_Name: SportCar
   m_EditorClassIdentifier: 
-  acceleration: 30
-  brakes: 50
-  topSpeed: 33
+  acceleration: 50
+  brakes: 85
+  topSpeed: 60
   maxSteerAngle: 30
-  steerSensitivity: 1
+  steerSensitivity: 0.6
   mass: 550
   SuspensionSpring: 17800
   SuspensionDamper: 10000

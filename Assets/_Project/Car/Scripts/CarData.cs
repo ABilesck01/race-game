@@ -17,14 +17,14 @@ public class CarData
     {
         StarValue starValue = stats.GetStarLevel(stars);
 
-        acceleration = /*baseCar.acceleration + */starValue.acceleration.getValue();
-        brakes = /*baseCar.brakes + */starValue.brakes.getValue();
-        topSpeed = starValue.topSpeed.getValue();
-        maxSteerAngle = starValue.maxSteerAngle.getValue();
-        steerSensitivity = starValue.steerSensitivity.getValue();
-        mass = starValue.mass.getValue();
-        SuspensionSpring = starValue.SuspensionSpring.getValue();
-        SuspensionDamper = starValue.SuspensionDamper.getValue();
-        SuspensionDistance = starValue.SuspensionDistance.getValue();
+        acceleration = baseCar.acceleration + starValue.acceleration.getValue();
+        brakes = baseCar.brakes + starValue.brakes.getValue();
+        topSpeed = baseCar.topSpeed + starValue.topSpeed.getValue();
+        maxSteerAngle = baseCar.maxSteerAngle + starValue.maxSteerAngle.getValue();
+        steerSensitivity = baseCar.steerSensitivity + starValue.steerSensitivity.getValue();
+        mass = baseCar.mass + starValue.mass.getValue();
+        SuspensionSpring = baseCar.SuspensionSpring + starValue.SuspensionSpring.getValue();
+        SuspensionDamper = baseCar.SuspensionDamper + starValue.SuspensionDamper.getValue();
+        SuspensionDistance = baseCar.SuspensionDistance + starValue.SuspensionDistance.getValue();
     }
 }

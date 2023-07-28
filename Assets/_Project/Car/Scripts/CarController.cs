@@ -90,6 +90,11 @@ public class CarController : MonoBehaviour
         return currentSpeed;
     }
 
+    public int GetCurrentGear()
+    {
+        return currentGear + 1;
+    }
+
     public float CalculateRpm()
     {
         AnimationCurve currentGearCurve = gearsCurves[currentGear];

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Speedometer : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class Speedometer : MonoBehaviour
     [SerializeField] private SpeedMeasure measure;
     [SerializeField] private CarController carController;
     [SerializeField] private TextMeshProUGUI txtSpeed;
+    [SerializeField] private TextMeshProUGUI txtGear;
+    [SerializeField] private Image rpmFill;
 
     private void FixedUpdate()
     {
@@ -28,6 +31,8 @@ public class Speedometer : MonoBehaviour
         }
 
         txtSpeed.text = ((int)speed).ToString();
+        txtGear.text = carController.GetCurrentGear().ToString();
+        rpmFill.fillAmount = carController.CalculateRpm();
     }
 
 }
