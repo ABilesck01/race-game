@@ -10,16 +10,20 @@ public class CarCamera : MonoBehaviour
     [SerializeField] private float maxFov = 100;
     [Header("Position")]
     [SerializeField] private float moveSmoothness;
-    [SerializeField] private float rotationSmoothness;
+    [SerializeField] private Vector3 startMoveOffset;
+    [SerializeField] private Vector3 endMoveOffset;
     [Header("Rotation")]
-    [SerializeField] private Vector3 moveOffset;
-    [SerializeField] private Vector3 rotationOffset;
+    [SerializeField] private float rotationSmoothness;
+    [SerializeField] private Vector3 startRotationOffset;
+    [SerializeField] private Vector3 endRotationOffset;
 
     [SerializeField] private CarController car;
 
     private Camera cam;
     private Transform target;
     private Transform myTransform;
+    private Vector3 moveOffset;
+    private Vector3 rotationOffset;
 
     private void Awake()
     {
@@ -36,12 +40,15 @@ public class CarCamera : MonoBehaviour
 
     private void LateUpdate()
     {
-        HandleCamera();
+        HandleSpeed();
     }
 
-    private void HandleCamera()
+    private void HandleSpeed()
     {
-        cam.fieldOfView = Mathf.Lerp(minFov, maxFov, car.GetNormalizedSpeed());
+        float lerpSpeed = car.GetNormalizedSpeed();
+        cam.fieldOfView = Mathf.Lerp(minFov, maxFov, lerpSpeed);
+        moveOffset = Vector3.Lerp(startMoveOffset, endMoveOffset, lerpSpeed);
+        rotationOffset = Vector3.Lerp(startRotationOffset, endRotationOffset, lerpSpeed);
     }
 
     private void handleMovement()

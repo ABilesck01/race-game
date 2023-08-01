@@ -25,7 +25,7 @@ public class CarSounds : MonoBehaviour
 
     private void EngineSound()
     {
-        pitchFromCar = controller.CalculateRpm() * controller.GetNormalizedSpeed() + minPitch;
+        pitchFromCar = controller.CalculateRpm() + minPitch;
 
         if( pitchFromCar < minPitch ) 
         {

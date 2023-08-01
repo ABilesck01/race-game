@@ -17,6 +17,8 @@ public class Speedometer : MonoBehaviour
     [SerializeField] private TextMeshProUGUI txtSpeed;
     [SerializeField] private TextMeshProUGUI txtGear;
     [SerializeField] private Image rpmFill;
+    [Space]
+    [SerializeField] private float minRpm = 0.1f;
 
     private void FixedUpdate()
     {

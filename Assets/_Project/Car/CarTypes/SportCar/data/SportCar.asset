@@ -16,7 +16,7 @@ MonoBehaviour:
   brakes: 85
   topSpeed: 60
   maxSteerAngle: 30
-  steerSensitivity: 0.6
+  steerSensitivity: 0.2
   mass: 550
   SuspensionSpring: 17800
   SuspensionDamper: 10000

@@ -50,6 +50,8 @@ public class CarController : MonoBehaviour
     private bool isTopSpeed = false;
     private bool isReverseBreaking = false;
     private float currentSpeed;
+    private float currentNormalizedSpeed;
+    private float currentRpm;
     private int currentGear = 0;
     private float currentAccel = 0;
 
@@ -98,14 +100,16 @@ public class CarController : MonoBehaviour
     public float CalculateRpm()
     {
         AnimationCurve currentGearCurve = gearsCurves[currentGear];
+        float acceleration = currentGearCurve.Evaluate(GetNormalizedSpeed());
+
         float maxValue = 0f;
         foreach (Keyframe keyframe in currentGearCurve.keys)
         {
             if(keyframe.value > maxValue)
                 maxValue = keyframe.value;
         }
-
-        return 1 - (currentAccel / maxValue);
+        //return acceleration / maxValue;
+        return 1 - (acceleration / maxValue);
     }
 
     public float GetNormalizedSpeed()
@@ -272,6 +276,8 @@ public class CarController : MonoBehaviour
 
         currentAccel = CalculateGearAccel();
         isTopSpeed = IsOnTopSpeed();
+        currentRpm = CalculateRpm();
+        currentNormalizedSpeed = GetNormalizedSpeed();
 
         WheelEffects();
     }

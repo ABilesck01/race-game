@@ -604,19 +604,19 @@ PrefabInstance:
       objectReference: {fileID: 1107551533}
     - target: {fileID: 6787888025355877052, guid: 2b6d0bee7dbab5d4592db33fed0c8630, type: 3}
       propertyPath: gearsAutoChange.Array.data[0]
-      value: 0.261
+      value: 0.15
       objectReference: {fileID: 0}
     - target: {fileID: 6787888025355877052, guid: 2b6d0bee7dbab5d4592db33fed0c8630, type: 3}
       propertyPath: gearsAutoChange.Array.data[1]
-      value: 0.376
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 6787888025355877052, guid: 2b6d0bee7dbab5d4592db33fed0c8630, type: 3}
       propertyPath: gearsAutoChange.Array.data[2]
-      value: 0.482
+      value: 0.35
       objectReference: {fileID: 0}
     - target: {fileID: 6787888025355877052, guid: 2b6d0bee7dbab5d4592db33fed0c8630, type: 3}
       propertyPath: gearsAutoChange.Array.data[3]
-      value: 0.65
+      value: 0.47
       objectReference: {fileID: 0}
     - target: {fileID: 6787888025355877052, guid: 2b6d0bee7dbab5d4592db33fed0c8630, type: 3}
       propertyPath: wheels.Array.data[0].skidRenderer
