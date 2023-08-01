@@ -4,59 +4,15 @@ using UnityEngine;
 
 public class CarSounds : MonoBehaviour
 {
-    [SerializeField] private float minPitch;
-    [SerializeField] private float maxPitch;
-
-    private OldCarController controller;
-    private AudioSource audioSource;
-
-    private float pitchFromCar;
-
-    private void Awake()
+    [System.Serializable]
+    public struct AudioData
     {
-        controller = GetComponent<OldCarController>();
-        audioSource = GetComponent<AudioSource>();
+        public AudioSource source;
+        public float maxVolume;
+        public float maxPitch;
     }
 
-    private void Update()
-    {
-        EngineSound();
-    }   
+    [SerializeField] private AudioData runningAudioData;
 
-    private void EngineSound()
-    {
-        pitchFromCar = controller.CalculateRpm() + minPitch;
-
-        if( pitchFromCar < minPitch ) 
-        {
-            audioSource.pitch = minPitch;
-        }
-        else if( pitchFromCar > maxPitch )
-        {
-            audioSource.pitch = maxPitch;
-        }
-        else
-        {
-            audioSource.pitch = pitchFromCar;
-        }
-
-        //if (currentSpeed < minSpeed)
-        //{
-        //    audioSource.pitch = minPitch;
-        //    return;
-        //}
-        //if (currentSpeed > maxSpeed)
-        //{
-        //    audioSource.pitch = maxPitch;
-        //    return;
-        //}
-
-        //if (currentSpeed > minSpeed && currentSpeed < maxSpeed)
-        //{
-        //    audioSource.pitch = minPitch + pitchFromCar;
-        //    return;
-        //}
-
-        
-    }
+    private CarController carController;
 }

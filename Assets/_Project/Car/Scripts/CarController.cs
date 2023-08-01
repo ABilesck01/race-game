@@ -124,9 +124,15 @@ public class CarController : MonoBehaviour
         wheelMesh.rotation = quat;
     }
 
-    private float NormalizedSpeed()
+    public float NormalizedSpeed()
     {
         return speed / topSpeed;
+    }
+
+    public float GetSpeedRatio()
+    {
+        var gas = Mathf.Clamp(gasInput, 0.5f, 1f);
+        return speed * gas / topSpeed;
     }
 }
 
