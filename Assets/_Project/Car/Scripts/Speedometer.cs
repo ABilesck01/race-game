@@ -13,7 +13,7 @@ public class Speedometer : MonoBehaviour
     }
 
     [SerializeField] private SpeedMeasure measure;
-    [SerializeField] private CarController carController;
+    [SerializeField] private OldCarController carController;
     [SerializeField] private TextMeshProUGUI txtSpeed;
     [SerializeField] private TextMeshProUGUI txtGear;
     [SerializeField] private Image rpmFill;

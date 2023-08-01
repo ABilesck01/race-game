@@ -17,7 +17,7 @@ public class CarCamera : MonoBehaviour
     [SerializeField] private Vector3 startRotationOffset;
     [SerializeField] private Vector3 endRotationOffset;
 
-    [SerializeField] private CarController car;
+    [SerializeField] private Transform car;
 
     private Camera cam;
     private Transform target;
@@ -45,7 +45,7 @@ public class CarCamera : MonoBehaviour
 
     private void HandleSpeed()
     {
-        float lerpSpeed = car.GetNormalizedSpeed();
+        float lerpSpeed = 0; // car.GetNormalizedSpeed();
         cam.fieldOfView = Mathf.Lerp(minFov, maxFov, lerpSpeed);
         moveOffset = Vector3.Lerp(startMoveOffset, endMoveOffset, lerpSpeed);
         rotationOffset = Vector3.Lerp(startRotationOffset, endRotationOffset, lerpSpeed);

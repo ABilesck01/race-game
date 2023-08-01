@@ -7,14 +7,14 @@ public class CarSounds : MonoBehaviour
     [SerializeField] private float minPitch;
     [SerializeField] private float maxPitch;
 
-    private CarController controller;
+    private OldCarController controller;
     private AudioSource audioSource;
 
     private float pitchFromCar;
 
     private void Awake()
     {
-        controller = GetComponent<CarController>();
+        controller = GetComponent<OldCarController>();
         audioSource = GetComponent<AudioSource>();
     }
 

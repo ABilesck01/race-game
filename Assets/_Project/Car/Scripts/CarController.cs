@@ -1,293 +1,141 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.ConstrainedExecution;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class CarController : MonoBehaviour
 {
-    public enum Axel
+    [System.Serializable]
+    public struct WheelsTransform
     {
-        Front,
-        Rear
-    }
-    [Serializable]
-    public struct Wheel
-    {
-        public GameObject model;
-        public WheelCollider collider;
-        public TrailRenderer skidRenderer;
-        public Axel axel;
+        public Transform FlWheel;
+        public Transform FrWheel;
+        public Transform RlWheel;
+        public Transform RrWheel;
     }
 
-    [SerializeField] public CarAsset carAsset;
-    [SerializeField] public CarStatsData carStatsData;
-    [Space]
+    [Header("Wheels")]
+    [SerializeField] private WheelsTransform wheelsTransform;
+    [SerializeField] private WheelsColliders wheelsColliders;
     [SerializeField] private Transform centerOfMass;
-    [Header("Gears Settings")]
-    [SerializeField] private List<AnimationCurve> gearsCurves;
-    [SerializeField, Range(0.1f, 0.95f)] private List<float> gearsAutoChange;
-    [SerializeField] private bool automaticGeatShift= true;
     [Space]
-    [SerializeField] private List<Wheel> wheels;
+    [Header("Car Settings")]
+    [SerializeField] private float topSpeed;
+    [SerializeField] private float motorPower = 500f;
+    [SerializeField] private float breakePower = 50000f;
+    [SerializeField] private float maxSteerAngle = 35f;
+    [SerializeField] private AnimationCurve steeringCurve;
 
-    private CarData carData;
     private Rigidbody rb;
-    
-    private float topSpeed = 33;
-    private float maxAcceleration = 30f;
-    private float brakeAcceleration = 30f;
-    private float turnSensitivity = 1f;
-    private float maxSteerAngle = 30f;
-    
+    private Transform tr;
+    private float speed;
 
-    private float verticalInput = 0;
-    private float horizontalInput = 0;
-    private bool shiftUp = false;
-    private bool shiftDown = false;
+    private float gasInput;
+    private float brakeInput;
+    private float steerInput;
 
-    private bool isBreaking = false;
-    private bool isTopSpeed = false;
-    private bool isReverseBreaking = false;
-    private float currentSpeed;
-    private float currentNormalizedSpeed;
-    private float currentRpm;
-    private int currentGear = 0;
-    private float currentAccel = 0;
+    #region UNITY_METHODS
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        tr = transform;
         rb.centerOfMass = centerOfMass.localPosition;
-
-        GetStats();
-    }
-
-    private void GetStats()
-    {
-        carData = new CarData(carAsset, carStatsData, 1);
-
-        maxAcceleration = carData.acceleration;
-        brakeAcceleration = carData.brakes;
-        topSpeed = carData.topSpeed;
-        maxSteerAngle = carData.maxSteerAngle;
-        turnSensitivity = carData.steerSensitivity;
-
-        rb.mass = carData.mass;
-
-        var joint = new JointSpring();
-        joint.spring = carData.SuspensionSpring;
-        joint.damper = carData.SuspensionDamper;
-
-        foreach (var wheel in wheels)
-        {
-            
-            wheel.collider.suspensionSpring = joint;
-
-        }
-    }
-
-    public float GetCurrentSpeed()
-    {
-        return currentSpeed;
-    }
-
-    public int GetCurrentGear()
-    {
-        return currentGear + 1;
-    }
-
-    public float CalculateRpm()
-    {
-        AnimationCurve currentGearCurve = gearsCurves[currentGear];
-        float acceleration = currentGearCurve.Evaluate(GetNormalizedSpeed());
-
-        float maxValue = 0f;
-        foreach (Keyframe keyframe in currentGearCurve.keys)
-        {
-            if(keyframe.value > maxValue)
-                maxValue = keyframe.value;
-        }
-        //return acceleration / maxValue;
-        return 1 - (acceleration / maxValue);
-    }
-
-    public float GetNormalizedSpeed()
-    {
-        return currentSpeed / topSpeed;
-    }
-
-    public float GetGearAcceleration()
-    {
-        return currentAccel;
-    }
-
-    private float CalculateGearAccel()
-    {
-        AnimationCurve currentGearCurve = gearsCurves[currentGear];
-        float accel = currentGearCurve.Evaluate(GetNormalizedSpeed());
-
-        return accel;
-    }
-
-    private void getInputs()
-    {
-        verticalInput = Input.GetAxis("Vertical");
-        horizontalInput = Input.GetAxis("Horizontal");
-        isBreaking = Input.GetButton("Fire1");
-        shiftUp = Input.GetButtonDown("Fire2");
-        shiftDown = Input.GetButtonDown("Fire3");
-
-        isReverseBreaking = rb.velocity.z > 0 && verticalInput < 0;
-    }
-
-    private void Move()
-    {
-        foreach (Wheel wheel in wheels)
-        {
-            float torque = isTopSpeed ? 0 : verticalInput * maxAcceleration * 600 * Time.fixedDeltaTime * currentAccel;
-            wheel.collider.motorTorque = torque;
-        }
-    }
-
-    private bool IsOnTopSpeed()
-    {
-        currentSpeed = rb.velocity.magnitude;
-        return currentSpeed >= topSpeed;
-    }
-
-    private void Steer()
-    {
-        foreach (Wheel wheel in wheels)
-        {
-             if(wheel.axel == Axel.Front)
-            {
-                float angle = horizontalInput * turnSensitivity * maxSteerAngle;
-                wheel.collider.steerAngle = Mathf.Lerp(wheel.collider.steerAngle, angle, 0.6f);
-            }
-        }
-    }
-
-    private void RotateWheels()
-    {
-        foreach (Wheel wheel in wheels)
-        {
-            wheel.collider.GetWorldPose(out Vector3 pos, out Quaternion rot);
-            wheel.model.transform.position = pos;
-            wheel.model.transform.rotation = rot;
-        }
-    }
-
-    private void ApplyBrake()
-    {
-        if(isBreaking || isReverseBreaking || verticalInput == 0)
-        {
-            foreach(Wheel wheel in wheels)
-            {
-                wheel.collider.brakeTorque = 300 * brakeAcceleration * Time.fixedDeltaTime;
-            }
-            return;
-        }
-
-        foreach (Wheel wheel in wheels)
-        {
-            wheel.collider.brakeTorque = 0;
-        }
-    }
-
-    private void HandleGearShift()
-    {
-        if (!automaticGeatShift)
-        {
-            if(shiftUp)
-            {
-                if (currentGear >= gearsCurves.Count - 1) return;
-
-                currentGear++;
-                return;
-            }
-            if(shiftDown)
-            {
-                if (currentGear <= 0) return;
-
-                currentGear--;
-            }
-            return;
-        }
-
-        if(ChangeGearUp())
-        {
-            if (currentGear >= gearsCurves.Count - 1) return;
-
-            currentGear++;
-            return;
-        }
-        if(ChangeGearDown())
-        {
-            if (currentGear <= 0) return;
-
-            currentGear--;
-        }
-    }
-
-    private bool ChangeGearUp()
-    {
-        switch(currentGear)
-        {
-            case 0: return GetNormalizedSpeed() > gearsAutoChange[0];
-            case 1: return GetNormalizedSpeed() > gearsAutoChange[1];
-            case 2: return GetNormalizedSpeed() > gearsAutoChange[2];
-            case 3: return GetNormalizedSpeed() > gearsAutoChange[3];
-            case 4:
-            default: 
-                return false;
-
-        }
-    }
-    private bool ChangeGearDown()
-    {
-        switch (currentGear)
-        {
-            case 1: return GetNormalizedSpeed() < gearsAutoChange[0];
-            case 2: return GetNormalizedSpeed() < gearsAutoChange[1];
-            case 3: return GetNormalizedSpeed() < gearsAutoChange[2];
-            case 4: return GetNormalizedSpeed() < gearsAutoChange[3];
-            case 0: 
-            default:
-                return false;
-
-        }
-    }
-
-    private void WheelEffects()
-    {
-        foreach (Wheel wheel in wheels)
-        {
-
-            wheel.skidRenderer.emitting = isBreaking && wheel.axel == Axel.Rear;
-        }
     }
 
     private void Update()
     {
-        getInputs();
-        RotateWheels();
-        HandleGearShift();
+        GetInputs();
 
-        currentAccel = CalculateGearAccel();
-        isTopSpeed = IsOnTopSpeed();
-        currentRpm = CalculateRpm();
-        currentNormalizedSpeed = GetNormalizedSpeed();
-
-        WheelEffects();
+        speed = rb.velocity.magnitude;
     }
 
     private void FixedUpdate()
     {
-        Move();
-        Steer();
+        ApplyMotorForce();
+        ApplySteering();
         ApplyBrake();
+        ApplyWheelPositions();
+    }
+
+    #endregion
+
+    private void GetInputs()
+    {
+        gasInput = Input.GetAxis("Vertical");
+        steerInput = Input.GetAxis("Horizontal");
+
+        float movingDirection = Vector3.Dot(tr.forward, rb.velocity);
+
+        if (movingDirection < -0.5f && gasInput > 0)
+        {
+            brakeInput = Mathf.Abs(gasInput);
+        }
+        else if (movingDirection > 0.5f && gasInput < 0)
+        {
+            brakeInput = Mathf.Abs(gasInput);
+        }
+        else
+        {
+            brakeInput = 0;
+        }
+
+    }
+
+    private void ApplyMotorForce()
+    {
+        wheelsColliders.RlWheel.motorTorque = gasInput * motorPower;
+        wheelsColliders.RrWheel.motorTorque = gasInput * motorPower;
+    }
+
+    private void ApplySteering()
+    {
+        float steerPercentage = steeringCurve.Evaluate(NormalizedSpeed());
+
+        wheelsColliders.FlWheel.steerAngle = steerPercentage * maxSteerAngle * steerInput;
+        wheelsColliders.FrWheel.steerAngle = steerPercentage * maxSteerAngle * steerInput;
+    }
+
+    void ApplyWheelPositions()
+    {
+        UpdateWheel(wheelsColliders.FlWheel, wheelsTransform.FlWheel);
+        UpdateWheel(wheelsColliders.FrWheel, wheelsTransform.FrWheel);
+        UpdateWheel(wheelsColliders.RrWheel, wheelsTransform.RrWheel);
+        UpdateWheel(wheelsColliders.RlWheel, wheelsTransform.RlWheel);
+    }
+
+    private void ApplyBrake()
+    {
+        wheelsColliders.FrWheel.brakeTorque = brakeInput * breakePower * 0.7f;
+        wheelsColliders.FlWheel.brakeTorque = brakeInput * breakePower * 0.7f;
+
+        wheelsColliders.RrWheel.brakeTorque = brakeInput * breakePower * 0.3f;
+        wheelsColliders.RlWheel.brakeTorque = brakeInput * breakePower * 0.3f;
+
+
+    }
+
+    private void UpdateWheel(WheelCollider coll, Transform wheelMesh)
+    {
+        Quaternion quat;
+        Vector3 position;
+        coll.GetWorldPose(out position, out quat);
+        wheelMesh.position = position;
+        wheelMesh.rotation = quat;
+    }
+
+    private float NormalizedSpeed()
+    {
+        return speed / topSpeed;
     }
 }
 
 
+[System.Serializable]
+public struct WheelsColliders
+{
+    public WheelCollider FlWheel;
+    public WheelCollider FrWheel;
+    public WheelCollider RlWheel;
+    public WheelCollider RrWheel;
+}
