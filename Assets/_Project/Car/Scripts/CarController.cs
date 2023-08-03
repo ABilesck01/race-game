@@ -50,10 +50,13 @@ public class CarController : MonoBehaviour
     [Space]
     [Header("Flags")]
     [SerializeField] private bool keyboardInputs = true;
+    [SerializeField] private bool virtualJoystick = false;
     [SerializeField] private Transform centerOfMass;
 
     private Rigidbody rb;
     private Transform tr;
+    private FixedJoystick steerJoystick;
+
     private float speed;
     private float speedClamped;
     private float steerPercentage;
@@ -105,6 +108,11 @@ public class CarController : MonoBehaviour
         {
             gasInput = Input.GetAxis("Vertical");
             steerInput = Input.GetAxis("Horizontal");
+        }
+
+        if(virtualJoystick)
+        {
+            steerInput = steerJoystick.Horizontal;
         }
 
         float movingDirection = Vector3.Dot(tr.forward, rb.velocity);
@@ -209,6 +217,16 @@ public class CarController : MonoBehaviour
     public void SetKeyboardInputs(bool value)
     {
         keyboardInputs = value;
+    }
+
+    public void SetVirtualJoystick(FixedJoystick fixedJoystick)
+    {
+        steerJoystick = fixedJoystick;
+    }
+
+    public void SetVirtualJoystickUse(bool value)
+    {
+        virtualJoystick = value;
     }
 
     #endregion
