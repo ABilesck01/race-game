@@ -13,7 +13,8 @@ public class Speedometer : MonoBehaviour
     }
 
     [SerializeField] private SpeedMeasure measure;
-    [SerializeField] private OldCarController carController;
+    [SerializeField] private CarController carController;
+    [Space]
     [SerializeField] private TextMeshProUGUI txtSpeed;
     [SerializeField] private TextMeshProUGUI txtGear;
     [SerializeField] private Image rpmFill;
@@ -33,8 +34,8 @@ public class Speedometer : MonoBehaviour
         }
 
         txtSpeed.text = ((int)speed).ToString();
-        txtGear.text = carController.GetCurrentGear().ToString();
-        rpmFill.fillAmount = carController.CalculateRpm();
+        //txtGear.text = carController.GetCurrentGear().ToString();
+        //rpmFill.fillAmount = carController.CalculateRpm();
     }
 
 }

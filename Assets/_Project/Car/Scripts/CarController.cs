@@ -17,6 +17,7 @@ public class CarController : MonoBehaviour
     [Header("Wheels")]
     [SerializeField] private WheelsTransform wheelsTransform;
     [SerializeField] private WheelsColliders wheelsColliders;
+    [Space]
     [SerializeField] private Transform centerOfMass;
     [Space]
     [Header("Car Settings")]
@@ -29,6 +30,7 @@ public class CarController : MonoBehaviour
     private Rigidbody rb;
     private Transform tr;
     private float speed;
+    private float speedClamped;
 
     private float gasInput;
     private float brakeInput;
@@ -48,6 +50,8 @@ public class CarController : MonoBehaviour
         GetInputs();
 
         speed = rb.velocity.magnitude;
+        //speed = wheelsColliders.RrWheel.rpm * wheelsColliders.RrWheel.radius * 2f * Mathf.PI / 10f;
+        speedClamped = Mathf.Lerp(speedClamped, speed, Time.deltaTime);
     }
 
     private void FixedUpdate()
@@ -84,8 +88,16 @@ public class CarController : MonoBehaviour
 
     private void ApplyMotorForce()
     {
-        wheelsColliders.RlWheel.motorTorque = gasInput * motorPower;
-        wheelsColliders.RrWheel.motorTorque = gasInput * motorPower;
+        if(Mathf.Abs(speed) <= topSpeed)
+        {
+            wheelsColliders.RlWheel.motorTorque = gasInput * motorPower;
+            wheelsColliders.RrWheel.motorTorque = gasInput * motorPower;
+        }
+        else
+        {
+            wheelsColliders.RlWheel.motorTorque = 0f;
+            wheelsColliders.RrWheel.motorTorque = 0f;
+        }
     }
 
     private void ApplySteering()
@@ -117,12 +129,16 @@ public class CarController : MonoBehaviour
 
     private void UpdateWheel(WheelCollider coll, Transform wheelMesh)
     {
-        Quaternion quat;
-        Vector3 position;
-        coll.GetWorldPose(out position, out quat);
+        //Quaternion quat;
+        //Vector3 position;
+        coll.GetWorldPose(out Vector3 position, out Quaternion quat);
+        if (wheelMesh == null) return;
+
         wheelMesh.position = position;
         wheelMesh.rotation = quat;
     }
+
+    public float GetCurrentSpeed() => speedClamped;
 
     public float NormalizedSpeed()
     {
@@ -131,8 +147,8 @@ public class CarController : MonoBehaviour
 
     public float GetSpeedRatio()
     {
-        var gas = Mathf.Clamp(gasInput, 0.5f, 1f);
-        return speed * gas / topSpeed;
+        var gas = Mathf.Clamp(Mathf.Abs(gasInput), 0.5f, 1f);
+        return speedClamped * gas / topSpeed;
     }
 }
 
