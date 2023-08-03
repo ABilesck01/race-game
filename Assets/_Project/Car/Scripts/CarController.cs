@@ -5,6 +5,8 @@ using UnityEngine.EventSystems;
 
 public class CarController : MonoBehaviour
 {
+    #region structs
+
     [System.Serializable]
     public struct WheelsTransform
     {
@@ -14,29 +16,55 @@ public class CarController : MonoBehaviour
         public Transform RrWheel;
     }
 
+    [System.Serializable]
+    public struct WheelsColliders
+    {
+        public WheelCollider FlWheel;
+        public WheelCollider FrWheel;
+        public WheelCollider RlWheel;
+        public WheelCollider RrWheel;
+    }
+
+    [System.Serializable]
+    public struct CarSettings
+    {
+        public CarBaseData CarBaseAsset;
+        public CarData data;
+
+        public void InitializeBaseData()
+        {
+            if (CarBaseAsset == null) return;
+
+            data = new CarData(CarBaseAsset);
+        }
+    }
+
+    #endregion
+
+    #region variables
+
     [Header("Wheels")]
     [SerializeField] private WheelsTransform wheelsTransform;
     [SerializeField] private WheelsColliders wheelsColliders;
+    [SerializeField] private CarSettings carSettings;   
     [Space]
+    [Header("Flags")]
+    [SerializeField] private bool keyboardInputs = true;
     [SerializeField] private Transform centerOfMass;
-    [Space]
-    [Header("Car Settings")]
-    [SerializeField] private float topSpeed;
-    [SerializeField] private float motorPower = 500f;
-    [SerializeField] private float breakePower = 50000f;
-    [SerializeField] private float maxSteerAngle = 35f;
-    [SerializeField] private AnimationCurve steeringCurve;
 
     private Rigidbody rb;
     private Transform tr;
     private float speed;
     private float speedClamped;
+    private float steerPercentage;
 
     private float gasInput;
     private float brakeInput;
     private float steerInput;
 
-    #region UNITY_METHODS
+    #endregion
+
+    #region Unity Methods
 
     private void Awake()
     {
@@ -47,7 +75,7 @@ public class CarController : MonoBehaviour
 
     private void Update()
     {
-        GetInputs();
+        GetKeyboardInputs();
 
         speed = rb.velocity.magnitude;
         //speed = wheelsColliders.RrWheel.rpm * wheelsColliders.RrWheel.radius * 2f * Mathf.PI / 10f;
@@ -62,12 +90,22 @@ public class CarController : MonoBehaviour
         ApplyWheelPositions();
     }
 
+    private void OnValidate()
+    {
+        carSettings.InitializeBaseData();
+    }
+
     #endregion
 
-    private void GetInputs()
+    #region Car methods
+
+    private void GetKeyboardInputs()
     {
-        gasInput = Input.GetAxis("Vertical");
-        steerInput = Input.GetAxis("Horizontal");
+        if(keyboardInputs)
+        {
+            gasInput = Input.GetAxis("Vertical");
+            steerInput = Input.GetAxis("Horizontal");
+        }
 
         float movingDirection = Vector3.Dot(tr.forward, rb.velocity);
 
@@ -83,15 +121,14 @@ public class CarController : MonoBehaviour
         {
             brakeInput = 0;
         }
-
     }
 
     private void ApplyMotorForce()
     {
-        if(Mathf.Abs(speed) <= topSpeed)
+        if(Mathf.Abs(speed) <= carSettings.data.topSpeed)
         {
-            wheelsColliders.RlWheel.motorTorque = gasInput * motorPower;
-            wheelsColliders.RrWheel.motorTorque = gasInput * motorPower;
+            wheelsColliders.RlWheel.motorTorque = gasInput * carSettings.data.motorPower;
+            wheelsColliders.RrWheel.motorTorque = gasInput * carSettings.data.motorPower;
         }
         else
         {
@@ -102,10 +139,10 @@ public class CarController : MonoBehaviour
 
     private void ApplySteering()
     {
-        float steerPercentage = steeringCurve.Evaluate(NormalizedSpeed());
+        steerPercentage = carSettings.data.steeringCurve.Evaluate(NormalizedSpeed());
 
-        wheelsColliders.FlWheel.steerAngle = steerPercentage * maxSteerAngle * steerInput;
-        wheelsColliders.FrWheel.steerAngle = steerPercentage * maxSteerAngle * steerInput;
+        wheelsColliders.FlWheel.steerAngle = steerPercentage * carSettings.data.maxSteerAngle * steerInput * carSettings.data.steerSentitivity;
+        wheelsColliders.FrWheel.steerAngle = steerPercentage * carSettings.data.maxSteerAngle * steerInput * carSettings.data.steerSentitivity;
     }
 
     void ApplyWheelPositions()
@@ -118,11 +155,11 @@ public class CarController : MonoBehaviour
 
     private void ApplyBrake()
     {
-        wheelsColliders.FrWheel.brakeTorque = brakeInput * breakePower * 0.7f;
-        wheelsColliders.FlWheel.brakeTorque = brakeInput * breakePower * 0.7f;
+        wheelsColliders.FrWheel.brakeTorque = brakeInput * carSettings.data.breakePower * 0.7f;
+        wheelsColliders.FlWheel.brakeTorque = brakeInput * carSettings.data.breakePower * 0.7f;
 
-        wheelsColliders.RrWheel.brakeTorque = brakeInput * breakePower * 0.3f;
-        wheelsColliders.RlWheel.brakeTorque = brakeInput * breakePower * 0.3f;
+        wheelsColliders.RrWheel.brakeTorque = brakeInput * carSettings.data.breakePower * 0.3f;
+        wheelsColliders.RlWheel.brakeTorque = brakeInput * carSettings.data.breakePower * 0.3f;
 
 
     }
@@ -138,26 +175,42 @@ public class CarController : MonoBehaviour
         wheelMesh.rotation = quat;
     }
 
-    public float GetCurrentSpeed() => speedClamped;
+    #endregion
+
+    #region Getters
+
+    public float GetCurrentSpeed() => speed;
 
     public float NormalizedSpeed()
     {
-        return speed / topSpeed;
+        return speed / carSettings.data.topSpeed;
     }
 
     public float GetSpeedRatio()
     {
         var gas = Mathf.Clamp(Mathf.Abs(gasInput), 0.5f, 1f);
-        return speedClamped * gas / topSpeed;
+        return speedClamped * gas / carSettings.data.topSpeed;
     }
-}
 
+    #endregion
 
-[System.Serializable]
-public struct WheelsColliders
-{
-    public WheelCollider FlWheel;
-    public WheelCollider FrWheel;
-    public WheelCollider RlWheel;
-    public WheelCollider RrWheel;
+    #region Setters
+
+    public void SetGasInput(float value)
+    {
+        gasInput = value;
+    }
+
+    public void SetSteerInput(float value)
+    {
+        steerInput = value;
+    }
+
+    public void SetKeyboardInputs(bool value)
+    {
+        keyboardInputs = value;
+    }
+
+    #endregion
+
 }

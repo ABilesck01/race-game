@@ -20,8 +20,8 @@ public class OldCarController : MonoBehaviour
         public Axel axel;
     }
 
-    [SerializeField] public CarAsset carAsset;
-    [SerializeField] public CarStatsData carStatsData;
+    //[SerializeField] public CarAsset carAsset;
+    //[SerializeField] public CarStatsData carStatsData;
     [Space]
     [SerializeField] private Transform centerOfMass;
     [Header("Gears Settings")]
@@ -31,7 +31,7 @@ public class OldCarController : MonoBehaviour
     [Space]
     [SerializeField] private List<Wheel> wheels;
 
-    private CarData carData;
+    //private CarData carData;
     private Rigidbody rb;
     
     private float topSpeed = 33;
@@ -60,32 +60,32 @@ public class OldCarController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         rb.centerOfMass = centerOfMass.localPosition;
 
-        GetStats();
+        //GetStats();
     }
 
-    private void GetStats()
-    {
-        carData = new CarData(carAsset, carStatsData, 1);
+    //private void GetStats()
+    //{
+    //    //carData = new CarData(carAsset, carStatsData, 1);
 
-        maxAcceleration = carData.acceleration;
-        brakeAcceleration = carData.brakes;
-        topSpeed = carData.topSpeed;
-        maxSteerAngle = carData.maxSteerAngle;
-        turnSensitivity = carData.steerSensitivity;
+    //    maxAcceleration = carData.acceleration;
+    //    brakeAcceleration = carData.brakes;
+    //    topSpeed = carData.topSpeed;
+    //    maxSteerAngle = carData.maxSteerAngle;
+    //    turnSensitivity = carData.steerSensitivity;
 
-        rb.mass = carData.mass;
+    //    rb.mass = carData.mass;
 
-        var joint = new JointSpring();
-        joint.spring = carData.SuspensionSpring;
-        joint.damper = carData.SuspensionDamper;
+    //    var joint = new JointSpring();
+    //    joint.spring = carData.SuspensionSpring;
+    //    joint.damper = carData.SuspensionDamper;
 
-        foreach (var wheel in wheels)
-        {
+    //    foreach (var wheel in wheels)
+    //    {
             
-            wheel.collider.suspensionSpring = joint;
+    //        wheel.collider.suspensionSpring = joint;
 
-        }
-    }
+    //    }
+    //}
 
     public float GetCurrentSpeed()
     {
