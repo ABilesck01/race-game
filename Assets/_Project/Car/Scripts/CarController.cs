@@ -26,6 +26,15 @@ public class CarController : MonoBehaviour
     }
 
     [System.Serializable]
+    public struct WheelsVfx
+    {
+        public ParticleSystem FlWheel;
+        public ParticleSystem FrWheel;
+        public ParticleSystem RlWheel;
+        public ParticleSystem RrWheel;
+    }
+
+    [System.Serializable]
     public struct CarSettings
     {
         public CarBaseData CarBaseAsset;
@@ -46,8 +55,10 @@ public class CarController : MonoBehaviour
     [Header("Wheels")]
     [SerializeField] private WheelsTransform wheelsTransform;
     [SerializeField] private WheelsColliders wheelsColliders;
-    [SerializeField] private CarSettings carSettings;   
+    [SerializeField] private WheelsVfx wheelsVfx;
+    [SerializeField] private CarSettings carSettings;
     [Space]
+    [SerializeField] private ParticleSystem dust;
     [Header("Flags")]
     [SerializeField] private bool keyboardInputs = true;
     [SerializeField] private bool virtualJoystick = false;
@@ -76,6 +87,11 @@ public class CarController : MonoBehaviour
         rb.centerOfMass = centerOfMass.localPosition;
     }
 
+    private void Start()
+    {
+        SetupDustParticles();
+    }
+
     private void Update()
     {
         GetKeyboardInputs();
@@ -101,6 +117,19 @@ public class CarController : MonoBehaviour
     #endregion
 
     #region Car methods
+
+    private void SetupDustParticles()
+    {
+        wheelsVfx.FrWheel = InstantiateDust(wheelsColliders.FrWheel);
+        wheelsVfx.FlWheel = InstantiateDust(wheelsColliders.RlWheel);
+        wheelsVfx.RrWheel = InstantiateDust(wheelsColliders.RrWheel);
+        wheelsVfx.RlWheel = InstantiateDust(wheelsColliders.RlWheel);
+    }
+
+    private ParticleSystem InstantiateDust(WheelCollider wheel)
+    {
+        return Instantiate(dust, wheel.transform.position - Vector3.up * wheel.radius, Quaternion.identity, wheel.transform);
+    }
 
     private void GetKeyboardInputs()
     {

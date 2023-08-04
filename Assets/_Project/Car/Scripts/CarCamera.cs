@@ -18,6 +18,7 @@ public class CarCamera : MonoBehaviour
 
     [SerializeField] private Vector3 offset;
     [SerializeField] private float speed;
+    [SerializeField] private float speed2;
     [SerializeField] private Rigidbody car;
     [SerializeField] private Transform targetLook;
 
@@ -46,8 +47,9 @@ public class CarCamera : MonoBehaviour
         Vector3 playerForward = (car.velocity + target.forward).normalized;
         myTransform.position = Vector3.Lerp(myTransform.position,
             target.position + target.TransformVector(offset)
-            + playerForward * (-5f),
+            + playerForward * (-speed2),
             speed * Time.deltaTime);
+
         myTransform.LookAt(targetLook);
     }
 

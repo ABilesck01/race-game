@@ -430,6 +430,14 @@ PrefabInstance:
       value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 917755325, guid: 2b6d0bee7dbab5d4592db33fed0c8630, type: 3}
+      propertyPath: keyboardInputs
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 917755325, guid: 2b6d0bee7dbab5d4592db33fed0c8630, type: 3}
+      propertyPath: virtualJoystick
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 917755325, guid: 2b6d0bee7dbab5d4592db33fed0c8630, type: 3}
       propertyPath: carSettings.CarBaseAsset
       value: 
       objectReference: {fileID: 11400000, guid: d2c12342074c8d54a9a6fca113c75a39, type: 2}
