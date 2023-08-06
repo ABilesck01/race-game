@@ -10,12 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 11ee94bd55e962e479c14b17b44efc59, type: 3}
-  m_Name: SportCar
+  m_Name: '[baseCar] SportCar'
   m_EditorClassIdentifier: 
+  carName: 
+  carValue: 0
   topSpeed: 60
   motorPower: 500
   breakePower: 50000
-  steerSentitivity: 0.8
+  steerSentitivity: 0.7
   maxSteerAngle: 35
   steeringCurve:
     serializedVersion: 2
@@ -41,3 +43,4 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  gearBox: {fileID: 11400000, guid: 23b076e4872519246b25b15dfafa6170, type: 2}

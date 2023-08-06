@@ -26,25 +26,17 @@ public class CarController : MonoBehaviour
     }
 
     [System.Serializable]
-    public struct WheelsVfx
-    {
-        public ParticleSystem FlWheel;
-        public ParticleSystem FrWheel;
-        public ParticleSystem RlWheel;
-        public ParticleSystem RrWheel;
-    }
-
-    [System.Serializable]
     public struct CarSettings
     {
         public CarBaseData CarBaseAsset;
         public CarData data;
-
+        public GearBox gearBox;
         public void InitializeBaseData()
         {
             if (CarBaseAsset == null) return;
 
             data = new CarData(CarBaseAsset);
+            gearBox = CarBaseAsset.gearBox;
         }
     }
 
@@ -55,10 +47,8 @@ public class CarController : MonoBehaviour
     [Header("Wheels")]
     [SerializeField] private WheelsTransform wheelsTransform;
     [SerializeField] private WheelsColliders wheelsColliders;
-    [SerializeField] private WheelsVfx wheelsVfx;
     [SerializeField] private CarSettings carSettings;
     [Space]
-    [SerializeField] private ParticleSystem dust;
     [Header("Flags")]
     [SerializeField] private bool keyboardInputs = true;
     [SerializeField] private bool virtualJoystick = false;
@@ -67,14 +57,17 @@ public class CarController : MonoBehaviour
     private Rigidbody rb;
     private Transform tr;
     private FixedJoystick steerJoystick;
-
+    
     private float speed;
     private float speedClamped;
     private float steerPercentage;
-
+    private float currentRpm;
+    private float acceleration;
+    private int currentGear;
     private float gasInput;
     private float brakeInput;
     private float steerInput;
+    private bool isReversing = false;
 
     #endregion
 
@@ -87,22 +80,21 @@ public class CarController : MonoBehaviour
         rb.centerOfMass = centerOfMass.localPosition;
     }
 
-    private void Start()
-    {
-        SetupDustParticles();
-    }
-
     private void Update()
     {
         GetKeyboardInputs();
-
-        speed = rb.velocity.magnitude;
-        //speed = wheelsColliders.RrWheel.rpm * wheelsColliders.RrWheel.radius * 2f * Mathf.PI / 10f;
-        speedClamped = Mathf.Lerp(speedClamped, speed, Time.deltaTime);
     }
 
     private void FixedUpdate()
     {
+        CalculateNormalizedAcceleration();
+        CalculateRpm();
+        HandleGears();
+
+        speed = rb.velocity.magnitude;
+        if (speed < 0.05) speed = 0;
+        //speed = wheelsColliders.RrWheel.rpm * wheelsColliders.RrWheel.radius * 2f * Mathf.PI / 10f;
+
         ApplyMotorForce();
         ApplySteering();
         ApplyBrake();
@@ -117,19 +109,6 @@ public class CarController : MonoBehaviour
     #endregion
 
     #region Car methods
-
-    private void SetupDustParticles()
-    {
-        wheelsVfx.FrWheel = InstantiateDust(wheelsColliders.FrWheel);
-        wheelsVfx.FlWheel = InstantiateDust(wheelsColliders.RlWheel);
-        wheelsVfx.RrWheel = InstantiateDust(wheelsColliders.RrWheel);
-        wheelsVfx.RlWheel = InstantiateDust(wheelsColliders.RlWheel);
-    }
-
-    private ParticleSystem InstantiateDust(WheelCollider wheel)
-    {
-        return Instantiate(dust, wheel.transform.position - Vector3.up * wheel.radius, Quaternion.identity, wheel.transform);
-    }
 
     private void GetKeyboardInputs()
     {
@@ -158,14 +137,16 @@ public class CarController : MonoBehaviour
         {
             brakeInput = 0;
         }
+
+        isReversing = gasInput < 0 && movingDirection < 0.5f && speed > 1f;
     }
 
     private void ApplyMotorForce()
     {
         if(Mathf.Abs(speed) <= carSettings.data.topSpeed)
         {
-            wheelsColliders.RlWheel.motorTorque = gasInput * carSettings.data.motorPower;
-            wheelsColliders.RrWheel.motorTorque = gasInput * carSettings.data.motorPower;
+            wheelsColliders.RlWheel.motorTorque = gasInput * carSettings.data.motorPower * acceleration;
+            wheelsColliders.RrWheel.motorTorque = gasInput * carSettings.data.motorPower * acceleration;
         }
         else
         {
@@ -176,7 +157,7 @@ public class CarController : MonoBehaviour
 
     private void ApplySteering()
     {
-        steerPercentage = carSettings.data.steeringCurve.Evaluate(NormalizedSpeed());
+        steerPercentage = carSettings.data.steeringCurve.Evaluate(GetNormalizedSpeed());
 
         wheelsColliders.FlWheel.steerAngle = steerPercentage * carSettings.data.maxSteerAngle * steerInput * carSettings.data.steerSentitivity;
         wheelsColliders.FrWheel.steerAngle = steerPercentage * carSettings.data.maxSteerAngle * steerInput * carSettings.data.steerSentitivity;
@@ -197,8 +178,6 @@ public class CarController : MonoBehaviour
 
         wheelsColliders.RrWheel.brakeTorque = brakeInput * carSettings.data.breakePower * 0.3f;
         wheelsColliders.RlWheel.brakeTorque = brakeInput * carSettings.data.breakePower * 0.3f;
-
-
     }
 
     private void UpdateWheel(WheelCollider coll, Transform wheelMesh)
@@ -212,21 +191,105 @@ public class CarController : MonoBehaviour
         wheelMesh.rotation = quat;
     }
 
+    private void CalculateRpm()
+    {
+        AnimationCurve accelerationGearCurve = carSettings.gearBox.gearsCurves[currentGear];
+        
+        float maxValue = 0f;
+        Keyframe maxKeyFrame = accelerationGearCurve.keys[0];
+        foreach (Keyframe keyframe in accelerationGearCurve.keys)
+        {
+            if(keyframe.value > maxValue)
+            {
+                maxValue = keyframe.value;
+                maxKeyFrame = keyframe;
+            }
+        }
+
+        float maxGearSpeed = carSettings.data.topSpeed * maxKeyFrame.time; //get the gear top speed
+
+        float normalizedGearSpeed = (speed * 0.7f) / maxGearSpeed; //normalize the gear top speed based on current speed percentage
+
+        if(normalizedGearSpeed < carSettings.gearBox.minRpm) 
+        {
+            normalizedGearSpeed = carSettings.gearBox.minRpm;
+        }
+
+        currentRpm = normalizedGearSpeed;
+    }
+
+    private void CalculateNormalizedAcceleration()
+    {
+        AnimationCurve accelerationGearCurve = carSettings.gearBox.gearsCurves[currentGear];
+        acceleration = accelerationGearCurve.Evaluate(GetNormalizedSpeed());
+    }
+
+    private void HandleGears()
+    {
+        if(ShiftGearUp() && currentGear < carSettings.gearBox.gearsCurves.Length - 1)
+        {
+            currentGear++;
+        }
+        else if(ShiftGearDown() && currentGear > 0)
+        {
+            currentGear--;
+        }
+    }
+
+    private bool ShiftGearUp()
+    {
+        switch (currentGear)
+        {
+            case 0: return GetNormalizedSpeed() > carSettings.gearBox.gearShifts[0];
+            case 1: return GetNormalizedSpeed() > carSettings.gearBox.gearShifts[1];
+            case 2: return GetNormalizedSpeed() > carSettings.gearBox.gearShifts[2];
+            case 3: return GetNormalizedSpeed() > carSettings.gearBox.gearShifts[3];
+
+            default:
+            case 4: return false;
+        }
+    }
+
+    private bool ShiftGearDown()
+    {
+        switch (currentGear)
+        {
+            case 1: return GetNormalizedSpeed() < carSettings.gearBox.gearShifts[0];
+            case 2: return GetNormalizedSpeed() < carSettings.gearBox.gearShifts[1];
+            case 3: return GetNormalizedSpeed() < carSettings.gearBox.gearShifts[2];
+            case 4: return GetNormalizedSpeed() < carSettings.gearBox.gearShifts[3];
+
+            default:
+            case 0: return false;
+        }
+    }
+
     #endregion
 
     #region Getters
 
     public float GetCurrentSpeed() => speed;
 
-    public float NormalizedSpeed()
+    public float GetNormalizedRpm() => currentRpm;
+
+    public float GetGasInput() => gasInput;
+
+    public int GetCurrentGear() => currentGear + 1;
+
+    public float GetNormalizedSpeed()
     {
         return speed / carSettings.data.topSpeed;
     }
 
+    public bool GetReverse() => isReversing;
+
     public float GetSpeedRatio()
     {
+        float speed = wheelsColliders.RrWheel.rpm * wheelsColliders.RrWheel.radius * 2f * Mathf.PI / 10f;
+        speedClamped = Mathf.Lerp(speedClamped, speed, Time.deltaTime);
+
         var gas = Mathf.Clamp(Mathf.Abs(gasInput), 0.5f, 1f);
-        return speedClamped * gas / carSettings.data.topSpeed;
+        return speedClamped * gas / (carSettings.data.topSpeed * 3.6f);
     }
 
     #endregion

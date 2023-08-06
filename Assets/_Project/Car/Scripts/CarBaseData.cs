@@ -15,4 +15,5 @@ public class CarBaseData : ScriptableObject
     public float steerSentitivity = 0.8f;
     public float maxSteerAngle = 35f;
     public AnimationCurve steeringCurve;
+    public GearBox gearBox;
 }

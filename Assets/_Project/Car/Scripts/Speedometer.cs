@@ -21,7 +21,7 @@ public class Speedometer : MonoBehaviour
     [Space]
     [SerializeField] private float minRpm = 0.1f;
 
-    private void FixedUpdate()
+    private void LateUpdate()
     {
         float speed = carController.GetCurrentSpeed();
         if (measure == SpeedMeasure.kmh)
@@ -34,8 +34,14 @@ public class Speedometer : MonoBehaviour
         }
 
         txtSpeed.text = ((int)speed).ToString();
-        //txtGear.text = carController.GetCurrentGear().ToString();
-        //rpmFill.fillAmount = carController.CalculateRpm();
+
+        int gear = carController.GetCurrentGear();
+        if (carController.GetReverse())
+            txtGear.text = "R";
+        else
+            txtGear.text = gear.ToString();
+
+        rpmFill.fillAmount = carController.GetNormalizedRpm();
     }
 
 }

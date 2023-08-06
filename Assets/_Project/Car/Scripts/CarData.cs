@@ -20,8 +20,6 @@ public class CarData
         this.steerSentitivity = baseData.steerSentitivity;
         this.maxSteerAngle = baseData.maxSteerAngle;
         this.steeringCurve = baseData.steeringCurve;
-
-        Debug.Log("Hash: " + this.GetHashCode());
     }
 
 }

@@ -5,65 +5,47 @@ using UnityEngine;
 
 public class CarSounds : MonoBehaviour
 {
-    [System.Serializable]
-    public struct AudioData
-    {
-        public AudioSource source;
-        public float maxVolume;
-        public float maxPitch;
-    }
+    public AudioClip idleAudio;
+    public AudioClip runningAudio;
+    public float minPitch = 0.2f;
+    public float maxPitch = 2.0f;
+    public float minVolume = 0.2f;
+    public float maxVolume = 2.0f;
 
-    [SerializeField] private AudioData idleAudioData;
-    [SerializeField] private AudioData runningAudioData;
-    [SerializeField] private AudioData reveseAudioData;
-    [Space]
-    [SerializeField] private float limiterSound = 1f;
-    [SerializeField] private float limiterFrequency = 3f;
-    [SerializeField] private float limiterEngage = 0.8f;
-
+    private AudioSource audioSource;
     private CarController carController;
-    private float speedRatio = 0;
-    private float speedSign = 0;
-    private float revLimiter = 0;
+    private bool isOnIdle;
 
     private void Awake()
     {
         carController = GetComponent<CarController>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void Update()
     {
-        speedSign = Mathf.Sign(carController.GetSpeedRatio());
-        speedRatio = Mathf.Abs(carController.GetSpeedRatio());
-
-        if(speedRatio > limiterEngage)
+        if(carController.GetCurrentSpeed() <= 1f && !isOnIdle)
         {
-            revLimiter = (Mathf.Sin(Time.time * limiterFrequency) + 1) * limiterSound * (speedRatio - limiterEngage);
+            audioSource.clip = idleAudio;
+            isOnIdle = true;
+            audioSource.Play();
+        }
+        else if(carController.GetCurrentSpeed() > 1f && isOnIdle)
+        {
+            Debug.Log("Im Running");
+            audioSource.clip = runningAudio;
+            isOnIdle = false;
+            audioSource.Play();
         }
 
-        idleAudioData.source.volume = Mathf.Lerp(0.1f, idleAudioData.maxVolume, speedRatio);
+        audioSource.pitch = 1;
+        audioSource.volume = 1;
 
-        if(speedSign > 0)
-        {
-            StopAudio(reveseAudioData);
-            HandleAudio(runningAudioData);
-        }
-        else
-        {
-            StopAudio(runningAudioData);
-            HandleAudio(reveseAudioData);
-        }
-    }
+        if (isOnIdle) return;
 
-    private void StopAudio(AudioData audioData)
-    {
-        audioData.source.volume = 0;
-    }
-
-    private void HandleAudio(AudioData data, float minValue = 0.3f)
-    {
-        data.source.volume = Mathf.Lerp(minValue, data.maxVolume, speedRatio);
-        float desiredPitch = Mathf.Lerp(0.3f, data.maxPitch, speedRatio) + revLimiter;
-        data.source.pitch = Mathf.Lerp(runningAudioData.source.pitch, desiredPitch, Time.deltaTime);
+        float pitch = Mathf.Lerp(minPitch, maxPitch, carController.GetNormalizedRpm() * carController.GetGasInput());
+        float volume = Mathf.Lerp(minVolume, maxVolume, carController.GetGasInput());
+        audioSource.pitch = pitch;
+        audioSource.volume = volume;
     }
 }
