@@ -16,9 +16,9 @@ public class CarModifier : ScriptableObject
     public ModTier modTier;
     public ModPart modPart;
     [Range(0,100)] public int value;
-    public float GetValuePercent() => value / 100;
+    public float GetValuePercent() => (float)value / 100f;
 }
-
+    
 public enum ModTier
 {
     commom,

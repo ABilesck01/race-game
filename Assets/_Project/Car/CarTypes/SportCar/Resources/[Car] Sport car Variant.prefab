@@ -13,7 +13,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 917755325, guid: 2b6d0bee7dbab5d4592db33fed0c8630, type: 3}
       propertyPath: keyboardInputs
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 917755325, guid: 2b6d0bee7dbab5d4592db33fed0c8630, type: 3}
       propertyPath: virtualJoystick
@@ -280,5 +280,6 @@ MonoBehaviour:
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
+      modfiers: []
     gearBox: {fileID: 0}
   appearance: {fileID: 0}

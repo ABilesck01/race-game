@@ -80,4 +80,13 @@ public class StoreController : MonoBehaviour
 
         return saveCar;
     }
+
+    public void BuyCar(int index)
+    {
+        var currentData = SaveSystem.LoadPlayerData();
+
+        currentData.AddSaveCar(carsToBuy[index]);
+
+        SaveSystem.SavePlayerData(currentData);
+    }
 }

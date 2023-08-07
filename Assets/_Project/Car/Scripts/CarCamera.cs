@@ -32,7 +32,6 @@ public class CarCamera : MonoBehaviour
     {
         myTransform = transform;
         cam = GetComponent<Camera>();
-        target = car.transform;
     }
 
     //private void FixedUpdate()
@@ -44,6 +43,9 @@ public class CarCamera : MonoBehaviour
     private void FixedUpdate()
     {
         //HandleSpeed();
+
+        if (car == null) return;
+
         Vector3 playerForward = (car.velocity + target.forward).normalized;
         myTransform.position = Vector3.Lerp(myTransform.position,
             target.position + target.TransformVector(offset)
@@ -53,26 +55,11 @@ public class CarCamera : MonoBehaviour
         myTransform.LookAt(targetLook);
     }
 
-    //private void HandleSpeed()
-    //{
-    //    float lerpSpeed = 0; // car.GetNormalizedSpeed();
-    //    cam.fieldOfView = Mathf.Lerp(minFov, maxFov, lerpSpeed);
-    //    moveOffset = Vector3.Lerp(startMoveOffset, endMoveOffset, lerpSpeed);
-    //    rotationOffset = Vector3.Lerp(startRotationOffset, endRotationOffset, lerpSpeed);
-    //}
+    public void SetCar(Rigidbody car)
+    {
+        this.car = car;
+        target = car.transform;
+        targetLook = target;
 
-    //private void handleMovement()
-    //{
-    //    Vector3 targetPos = target.TransformPoint(moveOffset);
-
-    //    myTransform.position = Vector3.Lerp(myTransform.position, targetPos, moveSmoothness);
-    //}
-
-    //private void HandleRotation()
-    //{
-    //    var direction = target.position - myTransform.position;
-    //    Quaternion rot = Quaternion.LookRotation(direction + rotationOffset, Vector3.up);
-
-    //    myTransform.rotation = Quaternion.Lerp(myTransform.rotation, rot, rotationSmoothness);
-    //}
+    }
 }

@@ -18,6 +18,8 @@ public class CarStats : MonoBehaviour
         carSettings.CarBaseAsset = saveCarData.baseData;
         carSettings.InitializeBaseData();
 
+        carSettings.data.SetModList(saveCarData.modifiersList);
+
         appearance.mesh = carSettings.CarBaseAsset.appearances[saveCarData.appearence];
 
         carController.SetCarSettings(carSettings);
