@@ -937,7 +937,7 @@ GameObject:
   - component: {fileID: 6787888025355877049}
   - component: {fileID: 6787888025355877050}
   - component: {fileID: 6787888025355877051}
-  - component: {fileID: 7861697343722102500}
+  - component: {fileID: 6748935289390667449}
   - component: {fileID: 917755325}
   - component: {fileID: 6787888025355877053}
   - component: {fileID: 3927108534206882808}
@@ -998,7 +998,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.8030891, y: 1.0193515, z: 4.31879}
   m_Center: {x: -0.0048378706, y: 0.6869799, z: -0.0048377514}
---- !u!114 &7861697343722102500
+--- !u!114 &6748935289390667449
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1007,19 +1007,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 6787888025355877055}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 359ff9329bdbd84449c497c0e5d4a502, type: 3}
+  m_Script: {fileID: 11500000, guid: 9de187526f2a63d4186631ff6e7d0c1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wheelsTransform:
-    FlWheel: {fileID: 0}
-    FrWheel: {fileID: 0}
-    RlWheel: {fileID: 0}
-    RrWheel: {fileID: 0}
-  wheelsColliders:
-    FlWheel: {fileID: 6787888023312634274}
-    FrWheel: {fileID: 6787888025177038015}
-    RlWheel: {fileID: 6787888025353365989}
-    RrWheel: {fileID: 6787888025012674678}
   carSettings:
     CarBaseAsset: {fileID: 0}
     data:
@@ -1035,9 +1025,7 @@ MonoBehaviour:
         m_PostInfinity: 2
         m_RotationOrder: 4
     gearBox: {fileID: 0}
-  keyboardInputs: 1
-  virtualJoystick: 0
-  centerOfMass: {fileID: 6787888023313026706}
+  appearance: {fileID: 1110525231}
 --- !u!114 &917755325
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1060,21 +1048,6 @@ MonoBehaviour:
     FrWheel: {fileID: 6787888025177038015}
     RlWheel: {fileID: 6787888025353365989}
     RrWheel: {fileID: 6787888025012674678}
-  carSettings:
-    CarBaseAsset: {fileID: 0}
-    data:
-      topSpeed: 0
-      motorPower: 0
-      breakePower: 0
-      steerSentitivity: 0
-      maxSteerAngle: 0
-      steeringCurve:
-        serializedVersion: 2
-        m_Curve: []
-        m_PreInfinity: 2
-        m_PostInfinity: 2
-        m_RotationOrder: 4
-    gearBox: {fileID: 0}
   keyboardInputs: 1
   virtualJoystick: 0
   centerOfMass: {fileID: 6787888023313026706}

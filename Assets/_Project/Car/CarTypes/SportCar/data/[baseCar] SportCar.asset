@@ -44,3 +44,15 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   gearBox: {fileID: 11400000, guid: 23b076e4872519246b25b15dfafa6170, type: 2}
+  appearances:
+  - {fileID: 4300000, guid: 5f05a50926f7a29408001ea949862cb5, type: 3}
+  - {fileID: 4300000, guid: 0a27e9c6015609e44a866e370f9ba462, type: 3}
+  - {fileID: 4300000, guid: 33b1c8f040c7d054c99b8f395fbb07cd, type: 3}
+  - {fileID: 4300000, guid: e3a31a0cffeea5e43bee9af72920bf9a, type: 3}
+  - {fileID: 4300000, guid: 2fc4b1b74f84d1d4a9768f6de69a8973, type: 3}
+  - {fileID: 4300000, guid: 8345881c567c0f341a765920f0426b4e, type: 3}
+  - {fileID: 4300000, guid: 69d745fc9d2389145b5c51cc19088e2e, type: 3}
+  - {fileID: 4300000, guid: 501a82e90c7ed204bb7df5516d1008e8, type: 3}
+  - {fileID: 4300000, guid: ef01425c2cdfc9a4a93a8737e6f7f40b, type: 3}
+  - {fileID: 4300000, guid: 7d5a7d0032bd85c4b9e38341ed75e79c, type: 3}
+  carPrefab: {fileID: 1109389524822882080, guid: fb5ea60252250364fb89cd40b64c60d1, type: 3}

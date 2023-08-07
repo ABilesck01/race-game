@@ -25,21 +25,6 @@ public class CarController : MonoBehaviour
         public WheelCollider RrWheel;
     }
 
-    [System.Serializable]
-    public struct CarSettings
-    {
-        public CarBaseData CarBaseAsset;
-        public CarData data;
-        public GearBox gearBox;
-        public void InitializeBaseData()
-        {
-            if (CarBaseAsset == null) return;
-
-            data = new CarData(CarBaseAsset);
-            gearBox = CarBaseAsset.gearBox;
-        }
-    }
-
     #endregion
 
     #region variables
@@ -47,7 +32,6 @@ public class CarController : MonoBehaviour
     [Header("Wheels")]
     [SerializeField] private WheelsTransform wheelsTransform;
     [SerializeField] private WheelsColliders wheelsColliders;
-    [SerializeField] private CarSettings carSettings;
     [Space]
     [Header("Flags")]
     [SerializeField] private bool keyboardInputs = true;
@@ -57,7 +41,9 @@ public class CarController : MonoBehaviour
     private Rigidbody rb;
     private Transform tr;
     private FixedJoystick steerJoystick;
-    
+
+
+    private CarSettings carSettings;
     private float speed;
     private float speedClamped;
     private float steerPercentage;
@@ -99,11 +85,6 @@ public class CarController : MonoBehaviour
         ApplySteering();
         ApplyBrake();
         ApplyWheelPositions();
-    }
-
-    private void OnValidate()
-    {
-        carSettings.InitializeBaseData();
     }
 
     #endregion
@@ -321,6 +302,10 @@ public class CarController : MonoBehaviour
         virtualJoystick = value;
     }
 
-    #endregion
+    public void SetCarSettings(CarSettings carSettings)
+    {
+        this.carSettings = carSettings;
+    }
 
+    #endregion
 }

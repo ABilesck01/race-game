@@ -16,4 +16,8 @@ public class CarBaseData : ScriptableObject
     public float maxSteerAngle = 35f;
     public AnimationCurve steeringCurve;
     public GearBox gearBox;
+    [Header("Appearance")]
+    public List<Mesh> appearances;
+    [Header("Prefabs")]
+    public CarStats carPrefab;
 }

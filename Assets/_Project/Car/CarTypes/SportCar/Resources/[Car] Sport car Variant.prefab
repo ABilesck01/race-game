@@ -247,6 +247,38 @@ PrefabInstance:
       propertyPath: m_Name
       value: '[Car] Sport car Variant'
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 7861697343722102500, guid: 2b6d0bee7dbab5d4592db33fed0c8630, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2b6d0bee7dbab5d4592db33fed0c8630, type: 3}
+--- !u!1 &936523561900120870 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6787888025355877055, guid: 2b6d0bee7dbab5d4592db33fed0c8630, type: 3}
+  m_PrefabInstance: {fileID: 5966248086952075673}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4563077070266064540
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 936523561900120870}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9de187526f2a63d4186631ff6e7d0c1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  carSettings:
+    CarBaseAsset: {fileID: 0}
+    data:
+      topSpeed: 0
+      motorPower: 0
+      breakePower: 0
+      steerSentitivity: 0
+      maxSteerAngle: 0
+      steeringCurve:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+    gearBox: {fileID: 0}
+  appearance: {fileID: 0}
