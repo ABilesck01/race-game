@@ -6,11 +6,28 @@ public class CarStats : MonoBehaviour
 {
     [SerializeField] private CarSettings carSettings;
     [SerializeField] private MeshFilter appearance;
+    [SerializeField] private int skinIndex;
     private CarController carController;
 
     private void Awake()
     {
         carController = GetComponent<CarController>();
+    }
+
+    //private void Start()
+    //{
+    //    InitCar();
+    //}
+
+    [ContextMenu("Init car")]
+    private void InitCar()
+    {
+        if (carSettings.CarBaseAsset == null) return;
+
+        carSettings.InitializeBaseData();
+        appearance.mesh = carSettings.CarBaseAsset.appearances[skinIndex];
+
+        carController.SetCarSettings(carSettings);
     }
 
     public void SetSavedCar(SaveCarData saveCarData)

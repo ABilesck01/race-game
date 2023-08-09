@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11ee94bd55e962e479c14b17b44efc59, type: 3}
   m_Name: '[baseCar] SportCar'
   m_EditorClassIdentifier: 
-  carName: 
+  carName: Sport Car
   carValue: 0
   topSpeed: 60
   motorPower: 500

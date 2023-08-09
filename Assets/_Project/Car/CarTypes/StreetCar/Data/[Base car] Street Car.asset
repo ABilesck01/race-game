@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11ee94bd55e962e479c14b17b44efc59, type: 3}
+  m_Name: '[Base car] Street Car'
+  m_EditorClassIdentifier: 
+  carName: Street Car
+  carValue: 0
+  topSpeed: 55
+  motorPower: 450
+  breakePower: 20000
+  steerSentitivity: 0.8
+  maxSteerAngle: 45
+  steeringCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  gearBox: {fileID: 11400000, guid: 23b076e4872519246b25b15dfafa6170, type: 2}
+  appearances:
+  - {fileID: 4300000, guid: cddef5ec95141e6449814e41446682eb, type: 3}
+  - {fileID: 4300000, guid: 04c1e165525f70245b8904607f274647, type: 3}
+  - {fileID: 4300000, guid: 94179c7674ccf204fb588130a6449219, type: 3}
+  - {fileID: 4300000, guid: 7f6f5d3edb3cd1b4894fbf893d93236c, type: 3}
+  - {fileID: 4300000, guid: 52a338df12f0afc42804b2ee2c7ac23c, type: 3}
+  - {fileID: 4300000, guid: 6cb73c2622a3eb241a68e1397d101fd2, type: 3}
+  - {fileID: 4300000, guid: 9e26303104e9746418d1e5a3b8136ba9, type: 3}
+  - {fileID: 4300000, guid: 186273d10f0726546a22a2827f648c1f, type: 3}
+  - {fileID: 4300000, guid: c54a66168db3b8047ab652a07c0b2ca3, type: 3}
+  - {fileID: 4300000, guid: 1f2da8e53cdae9843907a382aa250704, type: 3}
+  carPrefab: {fileID: 1697986106949200773, guid: cafbeb7b9e4d2404b8f6e86e62439785, type: 3}

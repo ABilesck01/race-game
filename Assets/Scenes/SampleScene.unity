@@ -234,6 +234,10 @@ PrefabInstance:
       propertyPath: m_SidewaysFriction.m_Stiffness
       value: 1.8
       objectReference: {fileID: 0}
+    - target: {fileID: 1109389524822882080, guid: fb5ea60252250364fb89cd40b64c60d1, type: 3}
+      propertyPath: carSettings.CarBaseAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: d2c12342074c8d54a9a6fca113c75a39, type: 2}
     - target: {fileID: 5966248087848629284, guid: fb5ea60252250364fb89cd40b64c60d1, type: 3}
       propertyPath: dust
       value: 

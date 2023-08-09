@@ -34,6 +34,12 @@ public class CarCamera : MonoBehaviour
         cam = GetComponent<Camera>();
     }
 
+    private void Start()
+    {
+        if(car != null)
+            SetCar(car);
+    }
+
     //private void FixedUpdate()
     //{
     //    handleMovement();

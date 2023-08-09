@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f554b37a64b91984e8395b61018fe158, type: 3}
+  m_Name: SprintCar
+  m_EditorClassIdentifier: 
+  baseCar: {fileID: 11400000, guid: 8680a23e3c7355d478aebde408295307, type: 2}
+  commomModifierList:
+  - {fileID: 11400000, guid: 764d14437c8d9594ebdc06925ba584c6, type: 2}
+  - {fileID: 11400000, guid: a8c877415f125cf4e82dc5159cd2ee55, type: 2}
+  - {fileID: 11400000, guid: 65de16e9349c8d8408e9832082423ab5, type: 2}
+  - {fileID: 11400000, guid: af5f270420e158b4f83f325774668cea, type: 2}
+  - {fileID: 11400000, guid: 89a7ffd519c2c8e4e8e08cdd76758e95, type: 2}
+  - {fileID: 11400000, guid: 228c277351573444bba96ef71a7f2107, type: 2}
+  uncommomModifierList:
+  - {fileID: 11400000, guid: 36f43361d1b5df04b899f15ec294b61b, type: 2}
+  - {fileID: 11400000, guid: 71f0016bce9b63b479cd882edde44c93, type: 2}
+  - {fileID: 11400000, guid: ff9d21405f989ef4e8a9ffb5babb379a, type: 2}
+  - {fileID: 11400000, guid: dfe3963e44e69744094c88c26d717de6, type: 2}
+  - {fileID: 11400000, guid: fe972b5136a35824799129e0c9d14794, type: 2}
+  - {fileID: 11400000, guid: 871d5b4a942ddc74a8ab4e320ef8391e, type: 2}
+  RareModifierList:
+  - {fileID: 11400000, guid: d637183ffb7fbcf44ab5eb1e3a668591, type: 2}
+  - {fileID: 11400000, guid: d761b60ebb522454bb57f443e2d6eab1, type: 2}
+  - {fileID: 11400000, guid: 3113135186be9834ebf7c60ef8f4f065, type: 2}
+  - {fileID: 11400000, guid: 391be392c22afa549a7ccb8c4fe6d780, type: 2}
+  - {fileID: 11400000, guid: 6677f4a48d4d3ac4da3e00f8e5463b38, type: 2}
+  - {fileID: 11400000, guid: dfd05f9626d5d7f4fb2901601b8176a6, type: 2}

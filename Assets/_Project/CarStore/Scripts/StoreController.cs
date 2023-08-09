@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class StoreController : MonoBehaviour
@@ -10,9 +11,11 @@ public class StoreController : MonoBehaviour
     [SerializeField] private CarBaseData car;
     [SerializeField] private List<SaveCarData> carsToBuy = new List<SaveCarData>();
     [Space]
-    [SerializeField] private Transform[] positions;
+    [SerializeField] private Transform position;
 
     private Dictionary<CarBaseData, StoreCarAsset> cars;
+
+    private int selectedCar = 0;
 
     private void Awake()
     {
@@ -31,12 +34,18 @@ public class StoreController : MonoBehaviour
     [ContextMenu("Suffle")]
     private void ShuffleCarAmount()
     {
+        selectedCar = 0;
+
         carsToBuy.Clear();
+
         for (int i = 0; i < 3; i++)
         {
-            var carInstance = ShuffleCar(car, (ModTier)i);
+            int randModel = Random.Range(0, carAssets.Count);
+
+            var carInstance = ShuffleCar(carAssets[randModel].baseCar, (ModTier)i);
             carsToBuy.Add(carInstance);
-            var carStats = Instantiate(carsToBuy[i].baseData.carPrefab, positions[i].position, Quaternion.identity, positions[i]);
+            var carStats = Instantiate(carsToBuy[i].baseData.carPrefab, position.position, Quaternion.identity, position);
+            carStats.gameObject.SetActive(false);
             carStats.SetSavedCar(carInstance);
         }
     }
@@ -45,21 +54,21 @@ public class StoreController : MonoBehaviour
     {
         StoreCarAsset asset = cars[data];
         List<CarModifier> modifiers = new List<CarModifier>();
-        int modifiersAmount = 0;
         List<CarModifier> modifiersToAdd = new List<CarModifier>();
+        int modifiersAmount;
         switch (tier)
         {
-            case ModTier.uncommom: 
-                modifiers = asset.uncommomModifierList; 
+            case ModTier.uncommom:
+                modifiers = asset.uncommomModifierList;
                 modifiersAmount = 2;
                 break;
-            case ModTier.rare: 
-                modifiers = asset.RareModifierList; 
+            case ModTier.rare:
+                modifiers = asset.RareModifierList;
                 modifiersAmount = 3;
                 break;
             default:
-            case ModTier.commom: 
-                modifiers = asset.commomModifierList; 
+            case ModTier.commom:
+                modifiers = asset.commomModifierList;
                 modifiersAmount = 1;
                 break;
         }
@@ -81,11 +90,22 @@ public class StoreController : MonoBehaviour
         return saveCar;
     }
 
-    public void BuyCar(int index)
+    public void SelectCar(int index)
+    {
+        selectedCar = index;
+        for (int i = 0; i < position.childCount; i++)
+        {
+            position.GetChild(i).gameObject.SetActive(i == selectedCar);
+        }
+    }
+
+    public void BuyCar()
     {
         var currentData = SaveSystem.LoadPlayerData();
 
-        currentData.AddSaveCar(carsToBuy[index]);
+        currentData.AddSaveCar(carsToBuy[selectedCar]);
+
+        Destroy(position.GetChild(selectedCar).gameObject);
 
         SaveSystem.SavePlayerData(currentData);
     }

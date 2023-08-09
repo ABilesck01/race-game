@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -50,9 +51,13 @@ public class CarController : MonoBehaviour
     private float currentRpm;
     private float acceleration;
     private int currentGear;
-    private float gasInput;
+
+    private Func<float> gasInput;
+    private Func<float> steerInput;
     private float brakeInput;
-    private float steerInput;
+
+
+
     private bool isReversing = false;
 
     #endregion
@@ -93,41 +98,41 @@ public class CarController : MonoBehaviour
 
     private void GetKeyboardInputs()
     {
-        if(keyboardInputs)
-        {
-            gasInput = Input.GetAxis("Vertical");
-            steerInput = Input.GetAxis("Horizontal");
-        }
+        //if(keyboardInputs)
+        //{
+        //    gasInput = Input.GetAxis("Vertical");
+        //    steerInput = Input.GetAxis("Horizontal");
+        //}
 
-        if(virtualJoystick)
-        {
-            steerInput = steerJoystick.Horizontal;
-        }
+        //if(virtualJoystick)
+        //{
+        //    steerInput = steerJoystick.Horizontal;
+        //}
 
         float movingDirection = Vector3.Dot(tr.forward, rb.velocity);
 
-        if (movingDirection < -0.5f && gasInput > 0)
+        if (movingDirection < -0.5f && gasInput() > 0)
         {
-            brakeInput = Mathf.Abs(gasInput);
+            brakeInput = Mathf.Abs(gasInput());
         }
-        else if (movingDirection > 0.5f && gasInput < 0)
+        else if (movingDirection > 0.5f && gasInput() < 0)
         {
-            brakeInput = Mathf.Abs(gasInput);
+            brakeInput = Mathf.Abs(gasInput());
         }
         else
         {
             brakeInput = 0;
         }
 
-        isReversing = gasInput < 0 && movingDirection < 0.5f && speed > 1f;
+        isReversing = gasInput() < 0 && movingDirection < 0.5f && speed > 1f;
     }
 
     private void ApplyMotorForce()
     {
         if(Mathf.Abs(speed) <= carSettings.data.topSpeed)
         {
-            wheelsColliders.RlWheel.motorTorque = gasInput * carSettings.data.motorPower * acceleration;
-            wheelsColliders.RrWheel.motorTorque = gasInput * carSettings.data.motorPower * acceleration;
+            wheelsColliders.RlWheel.motorTorque = gasInput() * carSettings.data.motorPower * acceleration;
+            wheelsColliders.RrWheel.motorTorque = gasInput() * carSettings.data.motorPower * acceleration;
         }
         else
         {
@@ -140,8 +145,8 @@ public class CarController : MonoBehaviour
     {
         steerPercentage = carSettings.data.steeringCurve.Evaluate(GetNormalizedSpeed());
 
-        wheelsColliders.FlWheel.steerAngle = steerPercentage * carSettings.data.maxSteerAngle * steerInput * carSettings.data.steerSentitivity;
-        wheelsColliders.FrWheel.steerAngle = steerPercentage * carSettings.data.maxSteerAngle * steerInput * carSettings.data.steerSentitivity;
+        wheelsColliders.FlWheel.steerAngle = steerPercentage * carSettings.data.maxSteerAngle * steerInput() * carSettings.data.steerSentitivity;
+        wheelsColliders.FrWheel.steerAngle = steerPercentage * carSettings.data.maxSteerAngle * steerInput() * carSettings.data.steerSentitivity;
     }
 
     void ApplyWheelPositions()
@@ -253,7 +258,7 @@ public class CarController : MonoBehaviour
 
     public float GetNormalizedRpm() => currentRpm;
 
-    public float GetGasInput() => gasInput;
+    public float GetGasInput() => gasInput();
 
     public int GetCurrentGear() => currentGear + 1;
 
@@ -269,7 +274,7 @@ public class CarController : MonoBehaviour
         float speed = wheelsColliders.RrWheel.rpm * wheelsColliders.RrWheel.radius * 2f * Mathf.PI / 10f;
         speedClamped = Mathf.Lerp(speedClamped, speed, Time.deltaTime);
 
-        var gas = Mathf.Clamp(Mathf.Abs(gasInput), 0.5f, 1f);
+        var gas = Mathf.Clamp(Mathf.Abs(gasInput()), 0.5f, 1f);
         return speedClamped * gas / (carSettings.data.topSpeed * 3.6f);
     }
 
@@ -277,14 +282,20 @@ public class CarController : MonoBehaviour
 
     #region Setters
 
-    public void SetGasInput(float value)
-    {
-        gasInput = value;
-    }
+    //public void SetGasInput(float value)
+    //{
+    //    gasInput = value;
+    //}
 
-    public void SetSteerInput(float value)
+    //public void SetSteerInput(float value)
+    //{
+    //    steerInput = value;
+    //}
+
+    public void SetInputs(Func<float> gas, Func<float> steer)
     {
-        steerInput = value;
+        this.gasInput = gas;
+        this.steerInput = steer;
     }
 
     public void SetKeyboardInputs(bool value)

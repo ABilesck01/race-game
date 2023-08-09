@@ -22,7 +22,7 @@ public class CarSelection : MonoBehaviour
         List<string> options = new List<string>();
         foreach (SaveCarData carData in saveCarDatas)
         {
-            options.Add(carData.baseData.name);
+            options.Add(carData.baseData.carName);
         }
 
         dropdownCars.AddOptions(options);
@@ -32,7 +32,7 @@ public class CarSelection : MonoBehaviour
 
     private void Start()
     {
-        SelectCar(0);
+        //SelectCar(0);
     }
 
     private void LoadCars()

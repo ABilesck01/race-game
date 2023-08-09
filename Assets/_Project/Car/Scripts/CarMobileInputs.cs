@@ -34,17 +34,17 @@ public class CarMobileInputs : MonoBehaviour
 
     private void Awake()
     {
-        mobileButtons.gasInput.triggers.Add(CreateEvent((e) => carController.SetGasInput(1), EventTriggerType.PointerDown));
-        mobileButtons.gasInput.triggers.Add(CreateEvent((e) => carController.SetGasInput(0), EventTriggerType.PointerUp));
+        //mobileButtons.gasInput.triggers.Add(CreateEvent((e) => carController.SetGasInput(1), EventTriggerType.PointerDown));
+        //mobileButtons.gasInput.triggers.Add(CreateEvent((e) => carController.SetGasInput(0), EventTriggerType.PointerUp));
 
-        mobileButtons.brakesInput.triggers.Add(CreateEvent((e) => carController.SetGasInput(-1), EventTriggerType.PointerDown));
-        mobileButtons.brakesInput.triggers.Add(CreateEvent((e) => carController.SetGasInput(0), EventTriggerType.PointerUp));
+        //mobileButtons.brakesInput.triggers.Add(CreateEvent((e) => carController.SetGasInput(-1), EventTriggerType.PointerDown));
+        //mobileButtons.brakesInput.triggers.Add(CreateEvent((e) => carController.SetGasInput(0), EventTriggerType.PointerUp));
 
-        mobileButtons.rightInput.triggers.Add(CreateEvent((e) => carController.SetSteerInput(1), EventTriggerType.PointerDown));
-        mobileButtons.rightInput.triggers.Add(CreateEvent((e) => carController.SetSteerInput(0), EventTriggerType.PointerUp));
+        //mobileButtons.rightInput.triggers.Add(CreateEvent((e) => carController.SetSteerInput(1), EventTriggerType.PointerDown));
+        //mobileButtons.rightInput.triggers.Add(CreateEvent((e) => carController.SetSteerInput(0), EventTriggerType.PointerUp));
 
-        mobileButtons.leftInput.triggers.Add(CreateEvent((e) => carController.SetSteerInput(-1), EventTriggerType.PointerDown));
-        mobileButtons.leftInput.triggers.Add(CreateEvent((e) => carController.SetSteerInput(0), EventTriggerType.PointerUp));
+        //mobileButtons.leftInput.triggers.Add(CreateEvent((e) => carController.SetSteerInput(-1), EventTriggerType.PointerDown));
+        //mobileButtons.leftInput.triggers.Add(CreateEvent((e) => carController.SetSteerInput(0), EventTriggerType.PointerUp));
         
     }
 

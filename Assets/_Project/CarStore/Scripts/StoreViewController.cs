@@ -8,6 +8,6 @@ public class StoreViewController : MonoBehaviour
 
     public void BuyCar(int index)
     {
-        storeController.BuyCar(index);
+        storeController.SelectCar(index);
     }
 }

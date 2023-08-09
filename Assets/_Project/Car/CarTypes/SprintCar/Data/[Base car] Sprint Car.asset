@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11ee94bd55e962e479c14b17b44efc59, type: 3}
+  m_Name: '[Base car] Sprint Car'
+  m_EditorClassIdentifier: 
+  carName: Sprint Car
+  carValue: 0
+  topSpeed: 40
+  motorPower: 600
+  breakePower: 20000
+  steerSentitivity: 0.8
+  maxSteerAngle: 50
+  steeringCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  gearBox: {fileID: 11400000, guid: 23b076e4872519246b25b15dfafa6170, type: 2}
+  appearances:
+  - {fileID: 4300000, guid: 2bf789ae1c6b3a44d82c3b31804c3255, type: 3}
+  - {fileID: 4300000, guid: 9696e254481949e40997dbcde5967419, type: 3}
+  - {fileID: 4300000, guid: d919b2a256591e840a2334a244adb5f6, type: 3}
+  - {fileID: 4300000, guid: 108b9f72255cbf34db8a9fad18f940c9, type: 3}
+  - {fileID: 4300000, guid: 8056862b4675948468c97236e45c9104, type: 3}
+  - {fileID: 4300000, guid: a5b768d94de93184cb78e03e262cf7ab, type: 3}
+  - {fileID: 4300000, guid: 4ed6635bfd2907f4a9f74e270c85d24b, type: 3}
+  - {fileID: 4300000, guid: 7fd03c3c018ac0445a1bf0e36ce8e5c9, type: 3}
+  - {fileID: 4300000, guid: be9eb6eb5ac379f4c9be9fd46ff84ce5, type: 3}
+  - {fileID: 4300000, guid: fe831cb3aae5a4e4b9789c1e77aa8f8c, type: 3}
+  carPrefab: {fileID: 5671693929013042572, guid: 2f3d16c07544806468f1ffade96ddd71, type: 3}
