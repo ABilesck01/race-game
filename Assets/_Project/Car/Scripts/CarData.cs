@@ -31,15 +31,15 @@ public class CarData
             switch(modifier.modPart)
             {
                 case CarModifier.ModPart.topSpeed:
-                    Debug.Log(modifier.GetValuePercent());
+                    //Debug.Log(modifier.GetValuePercent());
                     this.topSpeed += (topSpeed * modifier.GetValuePercent());
                     break;
                 case CarModifier.ModPart.motorTorque:
-                    Debug.Log(modifier.GetValuePercent());
+                    //Debug.Log(modifier.GetValuePercent());
                     this.motorPower += (motorPower * modifier.GetValuePercent());
                     break;
                 case CarModifier.ModPart.breakPower:
-                    Debug.Log(modifier.GetValuePercent());
+                    //Debug.Log(modifier.GetValuePercent());
                     this.breakePower += (breakePower * modifier.GetValuePercent());
                     break;
             }

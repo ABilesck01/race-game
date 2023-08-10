@@ -1,8 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class StoreController : MonoBehaviour
 {
@@ -28,7 +31,28 @@ public class StoreController : MonoBehaviour
 
     private void Start()
     {
-        ShuffleCarAmount();
+        StoreData data = StoreData.GetSavedStoreData();
+        if(data.NewShuffle())
+        {
+            ShuffleCarAmount();
+            data.date = DateTime.Now;
+            data.carsToBuy = this.carsToBuy;
+
+            StoreData.SaveStoreData(data);
+        }
+        else
+        {
+            this.carsToBuy = data.carsToBuy;
+        }
+
+        SpawnCars();
+
+        SelectCar(selectedCar);
+    }
+
+    public void ForceReshuffle()
+    {
+
     }
 
     [ContextMenu("Suffle")]
@@ -44,9 +68,24 @@ public class StoreController : MonoBehaviour
 
             var carInstance = ShuffleCar(carAssets[randModel].baseCar, (ModTier)i);
             carsToBuy.Add(carInstance);
-            var carStats = Instantiate(carsToBuy[i].baseData.carPrefab, position.position, Quaternion.identity, position);
+        }
+    }
+
+    private void ClearCars()
+    {
+        foreach (Transform car in position)
+        {
+            Destroy(car.gameObject);
+        }
+    }
+
+    private void SpawnCars()
+    {
+        foreach (var car in carsToBuy)
+        {
+            var carStats = Instantiate(car.baseData.carPrefab, position.position, Quaternion.identity, position);
             carStats.gameObject.SetActive(false);
-            carStats.SetSavedCar(carInstance);
+            carStats.SetSavedCar(car);
         }
     }
 
@@ -90,6 +129,55 @@ public class StoreController : MonoBehaviour
         return saveCar;
     }
 
+    public void NextCar()
+    {
+        selectedCar++;
+        if (selectedCar >= carsToBuy.Count)
+        {
+            selectedCar = 0;
+        }
+
+        SelectCar(selectedCar);
+    }
+
+    public void NextCar(out SaveCarData data)
+    {
+        selectedCar++;
+        if(selectedCar >= carsToBuy.Count)
+        {
+            selectedCar = 0;
+        }
+
+        data = carsToBuy[selectedCar];
+
+        SelectCar(selectedCar);
+    }
+
+    public void PrevCar()
+    {
+        selectedCar--;
+        if (selectedCar < 0)
+        {
+            selectedCar = carsToBuy.Count - 1;
+        }
+
+
+        SelectCar(selectedCar);
+    }
+
+    public void PrevCar(out SaveCarData data)
+    {
+        selectedCar--;
+        if (selectedCar < 0)
+        {
+            selectedCar = carsToBuy.Count - 1;
+        }
+
+        data = carsToBuy[selectedCar];
+
+        SelectCar(selectedCar);
+    }
+
     public void SelectCar(int index)
     {
         selectedCar = index;
@@ -103,10 +191,58 @@ public class StoreController : MonoBehaviour
     {
         var currentData = SaveSystem.LoadPlayerData();
 
-        currentData.AddSaveCar(carsToBuy[selectedCar]);
+        var boughtCar = carsToBuy[selectedCar];
+
+        currentData.AddSaveCar(boughtCar);
+
+        carsToBuy.Remove(boughtCar);
 
         Destroy(position.GetChild(selectedCar).gameObject);
 
         SaveSystem.SavePlayerData(currentData);
+        NextCar();
     }
+}
+[Serializable]
+public class StoreData
+{
+    public DateTime date;
+    public string dateString;
+    public List<SaveCarData> carsToBuy;
+
+    public bool NewShuffle()
+    {
+        TimeSpan time = DateTime.Now - this.date;
+        Debug.Log(time.Days);
+        return time.Days >= 1;
+    }
+    public StoreData() 
+    {
+        date = DateTime.Now.AddDays(-1);
+        dateString = date.ToString();
+        carsToBuy = new List<SaveCarData>();
+    }
+
+    public static StoreData GetSavedStoreData()
+    {
+        if(!PlayerPrefs.HasKey("store"))
+            return new StoreData();
+
+        string json = PlayerPrefs.GetString("store");
+
+        var data = JsonUtility.FromJson<StoreData>(json);
+        data.date = DateTime.Parse(data.dateString);
+
+        return data;
+    }
+
+    public static void SaveStoreData(StoreData data)
+    {
+        data.dateString = data.date.ToString();
+
+        string json = JsonUtility.ToJson(data);
+
+        PlayerPrefs.SetString("store", json);
+    }
+
 }
