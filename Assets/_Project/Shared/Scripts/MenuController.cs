@@ -11,10 +11,12 @@ public class MenuController : MonoBehaviour
     {
         btnStore.onClick.AddListener(() =>
         {
+            //SceneManager.UnloadSceneAsync(PauseController.SceneName);
             SceneManager.LoadScene("CarStore");
         });
         btnCity.onClick.AddListener(() =>
         {
+            //SceneManager.UnloadSceneAsync(PauseController.SceneName);
             SceneManager.LoadScene("World");
         });
     }

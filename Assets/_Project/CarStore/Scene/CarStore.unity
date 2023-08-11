@@ -1846,6 +1846,7 @@ GameObject:
   m_Component:
   - component: {fileID: 970802716}
   - component: {fileID: 970802715}
+  - component: {fileID: 970802717}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -1930,6 +1931,26 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!114 &970802717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 970802714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Version: 1
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_LightLayerMask: 1
+  m_CustomShadowLayers: 0
+  m_ShadowLayerMask: 1
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
 --- !u!1 &990100376
 GameObject:
   m_ObjectHideFlags: 0
@@ -2288,7 +2309,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   carAssets:
-  - {fileID: 11400000, guid: 0c2a07dced5e1e146982849891934260, type: 2}
+  - {fileID: 11400000, guid: 774753b679266784daccaecb69f1ac67, type: 2}
   car: {fileID: 11400000, guid: d2c12342074c8d54a9a6fca113c75a39, type: 2}
   carsToBuy: []
   position: {fileID: 1386454972}

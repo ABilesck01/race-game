@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Project/Map/Scene/World.unity
     guid: 8950ac4bf030d154ab5461be21b7c785
+  - enabled: 1
+    path: Assets/_Project/Pause/Scene/Pause.unity
+    guid: 745c1183846b5f0459ac00325a2a07ca
   m_configObjects: {}

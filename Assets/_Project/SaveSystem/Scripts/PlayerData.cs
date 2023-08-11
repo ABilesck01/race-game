@@ -21,4 +21,6 @@ public class PlayerData
 
         cars.Add(car);
     }
+
+    public SaveCarData getFirstCar() => cars[0];
 }
