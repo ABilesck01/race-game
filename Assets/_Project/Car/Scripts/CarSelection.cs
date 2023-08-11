@@ -27,12 +27,11 @@ public class CarSelection : MonoBehaviour
 
         dropdownCars.AddOptions(options);
 
-        //dropdownCars.onValueChanged.AddListener(SelectCar);
     }
 
     private void Start()
     {
-        //SelectCar(0);
+        SelectCar(0);
     }
 
     private void LoadCars()
@@ -44,8 +43,6 @@ public class CarSelection : MonoBehaviour
 
     public void SelectCar(int index)
     {
-        Debug.Log("select car");
-
         if(car != null)
         {
             Destroy(car);
@@ -54,6 +51,5 @@ public class CarSelection : MonoBehaviour
         var carInstance = Instantiate(saveCarDatas[index].baseData.carPrefab, Vector3.zero, Quaternion.identity);
         carInstance.SetSavedCar(saveCarDatas[index]);
         car = carInstance.gameObject;
-        carCamera.SetCar(carInstance.GetComponent<Rigidbody>());    
     }
 }

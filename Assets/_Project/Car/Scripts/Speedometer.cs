@@ -21,8 +21,25 @@ public class Speedometer : MonoBehaviour
     [Space]
     [SerializeField] private float minRpm = 0.1f;
 
+    private void OnEnable()
+    {
+        CarStats.OnCarSpawn += CarStats_OnCarSpawn;
+    }
+
+    private void OnDisable()
+    {
+        CarStats.OnCarSpawn -= CarStats_OnCarSpawn;
+    }
+
+    private void CarStats_OnCarSpawn(object sender, CarStats.OnCarSpawnEventArgs e)
+    {
+        carController = e.target.GetComponent<CarController>();
+    }
+
     private void LateUpdate()
     {
+        if (carController == null) return;
+
         float speed = carController.GetCurrentSpeed();
         if (measure == SpeedMeasure.kmh)
         {

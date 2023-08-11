@@ -236,7 +236,7 @@ MonoBehaviour:
       modfiers: []
     gearBox: {fileID: 0}
   appearance: {fileID: 0}
-  skinIndex: 0
+  look: {fileID: 299649795}
 --- !u!114 &917755325
 MonoBehaviour:
   m_ObjectHideFlags: 0

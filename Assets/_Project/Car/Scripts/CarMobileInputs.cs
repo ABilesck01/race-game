@@ -30,22 +30,42 @@ public class CarMobileInputs : MonoBehaviour
     [SerializeField] private SteerType steerType;
     [Space]
     [SerializeField] private GameObject buttons;
-    [SerializeField] private GameObject joystick;
+    [SerializeField] private GameObject joystickContainer;
+    [SerializeField] private FixedJoystick joystick;
+
+    private float gasInput;
+    private float steerInput;
 
     private void Awake()
     {
-        //mobileButtons.gasInput.triggers.Add(CreateEvent((e) => carController.SetGasInput(1), EventTriggerType.PointerDown));
-        //mobileButtons.gasInput.triggers.Add(CreateEvent((e) => carController.SetGasInput(0), EventTriggerType.PointerUp));
+        mobileButtons.gasInput.triggers.Add(CreateEvent((e) => gasInput = 1, EventTriggerType.PointerDown));
+        mobileButtons.gasInput.triggers.Add(CreateEvent((e) => gasInput = 0, EventTriggerType.PointerUp));
 
-        //mobileButtons.brakesInput.triggers.Add(CreateEvent((e) => carController.SetGasInput(-1), EventTriggerType.PointerDown));
-        //mobileButtons.brakesInput.triggers.Add(CreateEvent((e) => carController.SetGasInput(0), EventTriggerType.PointerUp));
+        mobileButtons.brakesInput.triggers.Add(CreateEvent((e) => gasInput = -1, EventTriggerType.PointerDown));
+        mobileButtons.brakesInput.triggers.Add(CreateEvent((e) => gasInput = 0, EventTriggerType.PointerUp));
 
-        //mobileButtons.rightInput.triggers.Add(CreateEvent((e) => carController.SetSteerInput(1), EventTriggerType.PointerDown));
-        //mobileButtons.rightInput.triggers.Add(CreateEvent((e) => carController.SetSteerInput(0), EventTriggerType.PointerUp));
+        mobileButtons.rightInput.triggers.Add(CreateEvent((e) => steerInput = 1, EventTriggerType.PointerDown));
+        mobileButtons.rightInput.triggers.Add(CreateEvent((e) => steerInput = 0, EventTriggerType.PointerUp));
 
-        //mobileButtons.leftInput.triggers.Add(CreateEvent((e) => carController.SetSteerInput(-1), EventTriggerType.PointerDown));
-        //mobileButtons.leftInput.triggers.Add(CreateEvent((e) => carController.SetSteerInput(0), EventTriggerType.PointerUp));
-        
+        mobileButtons.leftInput.triggers.Add(CreateEvent((e) => steerInput = -1, EventTriggerType.PointerDown));
+        mobileButtons.leftInput.triggers.Add(CreateEvent((e) => steerInput = 0, EventTriggerType.PointerUp));
+    }
+
+    private void OnEnable()
+    {
+        CarStats.OnCarSpawn += CarStats_OnCarSpawn;
+    }
+
+    private void OnDisable()
+    {
+        CarStats.OnCarSpawn -= CarStats_OnCarSpawn;
+    }
+
+    private void CarStats_OnCarSpawn(object sender, CarStats.OnCarSpawnEventArgs e)
+    {
+        carController = e.target.GetComponent<CarController>();
+
+        carController.SetInputs(() => gasInput, () => steerInput);
     }
 
     private EventTrigger.Entry CreateEvent(UnityAction<BaseEventData> action, EventTriggerType type = EventTriggerType.PointerDown)
@@ -56,20 +76,26 @@ public class CarMobileInputs : MonoBehaviour
         return pointerEvent;
     }
 
+    private void Update()
+    {
+        if (steerType != SteerType.joystick) return;
+
+        steerInput = joystick.Horizontal;
+    }
+
     public void ChangeSteerType(int type)
     {
+        steerType = (SteerType)type;
+
         switch (type)
         {
             case (int)SteerType.buttons:
                 buttons.SetActive(true);
-                joystick.SetActive(false);
-                carController.SetVirtualJoystickUse(false);
+                joystickContainer.SetActive(false);
                 break;
             case (int)SteerType.joystick:
-                carController.SetVirtualJoystick(mobileButtons.steerJoystick);
                 buttons.SetActive(false);
-                joystick.SetActive(true);
-                carController.SetVirtualJoystickUse(true);
+                joystickContainer.SetActive(true);
                 break;
         }
     }

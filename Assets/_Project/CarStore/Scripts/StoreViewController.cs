@@ -20,10 +20,14 @@ public class StoreViewController : MonoBehaviour
     [SerializeField] private Button btnNextCar;
     [SerializeField] private Button btnPrevCar;
     [SerializeField] private Button btnBuyCar;
+    [SerializeField] private Button btnShuffle;
+    [SerializeField] private GameObject emptyStore;
     [SerializeField] private CarScreenInfo screenInfo;
 
     private void Awake()
     {
+        emptyStore.SetActive(false);
+
         btnNextCar.onClick.AddListener(() =>
         {
             storeController.NextCar(out SaveCarData selectedCar);
@@ -39,6 +43,24 @@ public class StoreViewController : MonoBehaviour
         {
             storeController.BuyCar();
         });
+
+        btnShuffle.onClick.AddListener(() =>
+        {
+            emptyStore.SetActive(false);
+            storeController.ForceShuffle();
+        });
+
+        StoreController.OnEmptyStore += StoreController_OnEmptyStore;
+    }
+
+    private void OnDisable()
+    {
+        StoreController.OnEmptyStore -= StoreController_OnEmptyStore;
+    }
+
+    private void StoreController_OnEmptyStore(object sender, System.EventArgs e)
+    {
+        emptyStore.SetActive(true);
     }
 
     private void UpdateUI(SaveCarData data)

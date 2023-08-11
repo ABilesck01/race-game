@@ -5,17 +5,6 @@ using UnityEngine;
 
 public class CarCamera : MonoBehaviour
 {
-    //[Header("Effects")]
-    //[SerializeField] private float minFov = 40;
-    //[SerializeField] private float maxFov = 100;
-    //[Header("Position")]
-    //[SerializeField] private float moveSmoothness;
-    //[SerializeField] private Vector3 endMoveOffset;
-    //[Header("Rotation")]
-    //[SerializeField] private float rotationSmoothness;
-    //[SerializeField] private Vector3 startRotationOffset;
-    //[SerializeField] private Vector3 endRotationOffset;
-
     [SerializeField] private Vector3 offset;
     [SerializeField] private float speed;
     [SerializeField] private float speed2;
@@ -25,8 +14,6 @@ public class CarCamera : MonoBehaviour
     private Camera cam;
     private Transform target;
     private Transform myTransform;
-    //private Vector3 moveOffset;
-    //private Vector3 rotationOffset;
 
     private void Awake()
     {
@@ -34,22 +21,27 @@ public class CarCamera : MonoBehaviour
         cam = GetComponent<Camera>();
     }
 
-    private void Start()
+    private void OnEnable()
     {
-        if(car != null)
-            SetCar(car);
+        CarStats.OnCarSpawn += CarStats_OnCarSpawn;
     }
 
-    //private void FixedUpdate()
-    //{
-    //    handleMovement();
-    //    HandleRotation();
-    //}
+    private void OnDisable()
+    {
+        CarStats.OnCarSpawn -= CarStats_OnCarSpawn;
+    }
+
+    private void CarStats_OnCarSpawn(object sender, CarStats.OnCarSpawnEventArgs e)
+    {
+        Debug.Log("car spawn");
+
+        this.car = e.target.GetComponent<Rigidbody>();
+        target = e.target;
+        targetLook = e.lookAt;
+    }
 
     private void FixedUpdate()
     {
-        //HandleSpeed();
-
         if (car == null) return;
 
         Vector3 playerForward = (car.velocity + target.forward).normalized;
@@ -59,13 +51,5 @@ public class CarCamera : MonoBehaviour
             speed * Time.deltaTime);
 
         myTransform.LookAt(targetLook);
-    }
-
-    public void SetCar(Rigidbody car)
-    {
-        this.car = car;
-        target = car.transform;
-        targetLook = target;
-
     }
 }

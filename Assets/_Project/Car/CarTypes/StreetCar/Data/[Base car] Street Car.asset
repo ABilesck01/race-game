@@ -17,7 +17,7 @@ MonoBehaviour:
   topSpeed: 55
   motorPower: 450
   breakePower: 20000
-  steerSentitivity: 0.8
+  steerSentitivity: 0.6
   maxSteerAngle: 45
   steeringCurve:
     serializedVersion: 2

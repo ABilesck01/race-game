@@ -1,9 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -19,6 +15,8 @@ public class StoreController : MonoBehaviour
     private Dictionary<CarBaseData, StoreCarAsset> cars;
 
     private int selectedCar = 0;
+
+    public static event EventHandler OnEmptyStore;
 
     private void Awake()
     {
@@ -48,10 +46,22 @@ public class StoreController : MonoBehaviour
         SpawnCars();
 
         SelectCar(selectedCar);
+
+        if (carsToBuy.Count == 0) OnEmptyStore?.Invoke(this, EventArgs.Empty);
+
     }
 
-    public void ForceReshuffle()
+    public void ForceShuffle()
     {
+        ClearCars();
+        ShuffleCarAmount();
+        StoreData data = StoreData.GetSavedStoreData();
+        data.carsToBuy = this.carsToBuy;
+
+        StoreData.SaveStoreData(data);
+        SpawnCars();
+
+        SelectCar(selectedCar);
 
     }
 
@@ -190,17 +200,25 @@ public class StoreController : MonoBehaviour
     public void BuyCar()
     {
         var currentData = SaveSystem.LoadPlayerData();
+        StoreData data = StoreData.GetSavedStoreData();
 
         var boughtCar = carsToBuy[selectedCar];
 
         currentData.AddSaveCar(boughtCar);
 
         carsToBuy.Remove(boughtCar);
+        data.carsToBuy = this.carsToBuy;
+
+
 
         Destroy(position.GetChild(selectedCar).gameObject);
 
+        StoreData.SaveStoreData(data);
         SaveSystem.SavePlayerData(currentData);
+
         NextCar();
+
+        if (carsToBuy.Count == 0) OnEmptyStore?.Invoke(this, EventArgs.Empty);
     }
 }
 [Serializable]
@@ -213,7 +231,6 @@ public class StoreData
     public bool NewShuffle()
     {
         TimeSpan time = DateTime.Now - this.date;
-        Debug.Log(time.Days);
         return time.Days >= 1;
     }
     public StoreData() 
@@ -230,6 +247,8 @@ public class StoreData
 
         string json = PlayerPrefs.GetString("store");
 
+        Debug.Log(json);
+
         var data = JsonUtility.FromJson<StoreData>(json);
         data.date = DateTime.Parse(data.dateString);
 
@@ -241,6 +260,8 @@ public class StoreData
         data.dateString = data.date.ToString();
 
         string json = JsonUtility.ToJson(data);
+
+        Debug.Log(json);
 
         PlayerPrefs.SetString("store", json);
     }

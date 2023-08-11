@@ -32,7 +32,6 @@ public class CarSounds : MonoBehaviour
         }
         else if(carController.GetCurrentSpeed() > 1f && isOnIdle)
         {
-            Debug.Log("Im Running");
             audioSource.clip = runningAudio;
             isOnIdle = false;
             audioSource.Play();

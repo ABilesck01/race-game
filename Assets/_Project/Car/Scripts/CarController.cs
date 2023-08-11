@@ -98,17 +98,6 @@ public class CarController : MonoBehaviour
 
     private void GetKeyboardInputs()
     {
-        //if(keyboardInputs)
-        //{
-        //    gasInput = Input.GetAxis("Vertical");
-        //    steerInput = Input.GetAxis("Horizontal");
-        //}
-
-        //if(virtualJoystick)
-        //{
-        //    steerInput = steerJoystick.Horizontal;
-        //}
-
         float movingDirection = Vector3.Dot(tr.forward, rb.velocity);
 
         if (movingDirection < -0.5f && gasInput() > 0)
